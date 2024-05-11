@@ -69,6 +69,13 @@ sudo usermod -a -G sudo veeamuser
 sudo chown -R veeamuser:veeamuser /mnt/veeamrepo/
 sudo chmod 700 /mnt/veeamrepo/
 echo
+echo "Installing LT agent"
+wget -O agent.zip $lturl
+unzip agent.zip
+cd LTechAgent/
+chmod +x install.sh
+sudo ./install.sh
+read -p -s "Install done, you can verify in the thick client then press any key to continue ..." junk
 echo "Script is mostly done - configure Veeam now and when done return to this window"
 read -p -s "Hit any key ..." junk
 echo "Removing veeamuser from SUDO group"
