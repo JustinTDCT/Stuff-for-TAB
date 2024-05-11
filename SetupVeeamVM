@@ -62,7 +62,7 @@ echo
 echo "Attempting to mount volume ..."
 sudo mount -a
 echo "Listing volumes mapped to " $devnm "..."
-df -H | greb $devnm
+df -H | grep $devnm
 echo
 echo "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..."
 read -s
