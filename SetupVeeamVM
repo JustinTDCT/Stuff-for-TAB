@@ -15,7 +15,7 @@ installfunction () {
 EOF
 echo "Take a checkpoint of the VM now so if something goes wrong you can roll back easily"
 echo
-read -p -s "Hit any key when ready ..."
+read -p -s "Hit any key when ready ..." junk
 echo
 echo "Enter the tabadmin password when prompted  - updates being done ..."
 echo
@@ -24,12 +24,12 @@ sudo apt upgrade -y
 sudo apt install -y bmon unzip default-jre
 echo
 echo "Take note of the iSCSI ID below then hit any key to continue ..."
-read -p -s " "
+read -p -s " " junk
 sudo cat /etc/iscsi/initiatorname.iscsi
 echo
-read -s -p "Make sure you configure the NAS now for iSCSI and provide that ID then hit any key to continue... "
+read -s -p "Make sure you configure the NAS now for iSCSI and provide that ID then hit any key to continue... " junk
 echo
-read -s -p "Hit any key to open the iSCSI config file. Remove the comment before the automatic start and add one before the manual start..."
+read -s -p "Hit any key to open the iSCSI config file. Remove the comment before the automatic start and add one before the manual start..." junk
 sudo nano /etc/iscsi/iscsid.conf
 echo
 echo "Restarting iSCSI service ..."
@@ -49,10 +49,9 @@ echo "Formatting volume ..."
 sudo mkfs.xfs -b size=4096 -m reflink=1,crc=1 $devnm -f -K
 echo
 sudo blkid $devnm
-read -p -s "Take note of the UUID above then hit any key to conitnue to edit the fstab file ..."
+read -p -s "Take note of the UUID above then hit any key to conitnue to edit the fstab file ..." junk
 echo "Add this line /dev/disk/by-uuid/--the_UUID_FROM ABOVE--/mnt/veeamrepo xfs _netdev 0 0"
-read -p -s "Hit any key to continue ..."
-read -p -s "Hit any key to continue ..."
+read -p -s "Hit any key to continue ..." junk
 sudo mkdir /mnt/veeamrepo
 sudo nano /etc/fstab
 echo
@@ -61,7 +60,7 @@ sudo mount -a
 echo "Listing volumes mapped to " $devnm "..."
 df -H | greb $devnm
 echo
-read -p -s "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..."
+read -p -s "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..." junk
 echo
 echo "Creating veeamuser ..."
 sudo useradd veeamuser --create-home -s /bin/bash
@@ -71,7 +70,7 @@ sudo chown -R veeamuser:veeamuser /mnt/veeamrepo/
 sudo chmod 700 /mnt/veeamrepo/
 echo
 echo "Script is mostly done - configure Veeam now and when done return to this window"
-read -p -s "Hit any key ..."
+read -p -s "Hit any key ..." junk
 echo "Removing veeamuser from SUDO group"
 sudo usermod -a -G sudo veeamuser
 exit
