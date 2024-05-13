@@ -18,8 +18,9 @@ installfunction () {
   - LT URL: $lturl
   - HVHOST: $host
 
-  EOF
-  read -ps "Take a checkpoint of the VM now so if something goes wrong you can roll back easily, hit any key when ready ..."
+EOF
+  echo "Take a checkpoint of the VM now so if something goes wrong you can roll back easily, hit any key when ready ..."
+  read -s
   echo
   # Change TABADMIN password
   echo "Changing tabadmin password ... this is manual but you wanted to use "$tapw
@@ -37,7 +38,8 @@ installfunction () {
     exit
   fi
   # Update base OS
-  read -sp "Running updates, hit any key to start ..."
+  echo "Running updates, hit any key to start ..."
+  read -s
   sudo apt update
   sudo apt upgrade -y
   # install apps we want
@@ -48,17 +50,20 @@ installfunction () {
   echo "Updating Initiator Name ..."
   sudo cat > /etc/iscsi/initiatorname.iscsi <<EOF
   InitiatorName=iqn.2004-10.com.$host:veeamxfs01:c6b852bc3730
-  EOF
+EOF
   if [ $? != 0 ]; then
     echo "Rename didn't take, gonna quit.";
     exit
   fi
-  read -sp "Take note of the iSCSI ID below then hit any key to continue ..."
+  echo "Take note of the iSCSI ID below then hit any key to continue ..."
+  read -s
   sudo cat /etc/iscsi/initiatorname.iscsi
   echo 
-  read -sp "Make sure you configure the NAS now for iSCSI and provide that ID then hit any key to continue... "
+  echo "Make sure you configure the NAS now for iSCSI and provide that ID then hit any key to continue... "
+  read -s
   echo
-  read -sp "Hit any key to open the iSCSI config file. Remove the comment before the automatic start and add one before the manual start..."
+  echo "Hit any key to open the iSCSI config file. Remove the comment before the automatic start and add one before the manual start..."
+  read -s
   sudo nano /etc/iscsi/iscsid.conf
   echo
   echo "Restarting iSCSI service ..."
@@ -102,9 +107,10 @@ installfunction () {
   fi
   echo
   sudo blkid $devnm
-  read -sp "Take note of the UUID above then hit any key to conitnue to edit the fstab file ..."
+  echo "Take note of the UUID above then hit any key to conitnue to edit the fstab file ..."
   echo "Add this line /dev/disk/by-uuid/--the_UUID_FROM ABOVE--/mnt/veeamrepo xfs _netdev 0 0"
-  read -sp "Hit any key to continue ..."
+  echo "Hit any key to continue ..."
+  read -s
   sudo mkdir /mnt/veeamrepo
   if [ $? != 0 ]; then
     echo "Couldn't make folder, gonna quit.";
@@ -121,7 +127,8 @@ installfunction () {
   echo "Listing volumes mapped to " $devnm "..."
   df -H | grep $devnm
   echo
-  read -sp "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..."
+  echo "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..."
+  read -s
   echo
   echo "Creating veeamuser ..."
   sudo useradd veeamuser --create-home -s /bin/bash
