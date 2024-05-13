@@ -12,6 +12,7 @@ installfunction () {
   - tabadmin password: $tapw
   - NAS IP: $nasip
   - iSCSI device: $devnm
+  - LT URL: $lturl
   - HVHOST: $host
 
 EOF
@@ -196,6 +197,7 @@ EOF
     "3")  read -p "new NAS IP : " nasip ;;
     "4")  read -p "new device id : " devnm ;;
     "5")  read -p "new agent URL : " lturl ;;
+    "6")  read -p "hv host name : " host ;;
     "9")  installfunction ;;
     "0")  exit                      ;;
      * )  echo "invalid option"     ;;
