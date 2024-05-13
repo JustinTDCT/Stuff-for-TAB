@@ -4,7 +4,7 @@ tapw="NOT SET"
 nasip="NOT SET"
 lturl="NOT SET"
 devnm="/dev/sdb"
-
+host="NOT SET"
 installfunction () {
   cat<<EOF
   Starting setup using:
@@ -12,6 +12,7 @@ installfunction () {
   - tabadmin password: $tapw
   - NAS IP: $nasip
   - iSCSI device: $devnm
+  - HVHOST: $host
 
 EOF
 echo "Take a checkpoint of the VM now so if something goes wrong you can roll back easily, hit any key when ready ..."
@@ -35,7 +36,15 @@ sudo apt update
 sudo apt upgrade -y
 #sudo apt install -y bmon unzip default-jre
 echo
-echo "Take note of the iSCSI ID below then hit any key to continue ..."
+echo "Stopping iSCSI services ...
+sudo systemctl stop iscsid open-iscsi iscsid.socket
+sudo cat > /etc/iscsi/initiatorname.iscsi <<EOF
+iqn.2004-10.com.2022-$host:veeamxfs01:c6b852bc3730
+EOF
+if [ $? != 0 ]; then
+  echo "Rename didn't take, gonna quit.";
+  exit
+fiecho "Take note of the iSCSI ID below then hit any key to continue ..."
 read -s
 sudo cat /etc/iscsi/initiatorname.iscsi
 echo
@@ -47,7 +56,7 @@ read -s
 sudo nano /etc/iscsi/iscsid.conf
 echo
 echo "Restarting iSCSI service ..."
-sudo systemctl restart iscsid open-iscsi
+sudo systemctl restart iscsid open-iscsi iscsid.socket
 if [ $? != 0 ]; then
   echo "Service didn't restart normally, gonna quit.";
   exit
