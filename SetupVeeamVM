@@ -4,6 +4,7 @@ tapw="NOT SET"
 nasip="NOT SET"
 lturl="NOT SET"
 devnm="/dev/sdb"
+
 installfunction () {
   cat<<EOF
   Starting setup using:
@@ -14,20 +15,25 @@ installfunction () {
 
 EOF
 echo "Take a checkpoint of the VM now so if something goes wrong you can roll back easily, hit any key when ready ..."
-echo
 read -s
 echo "Changing tabadmin password ... this is manual but you wanted to use "$tapw
 sudo passwd -d tabadmin
 passwd
 if [ $? != 0 ]; then
+  echo "Something happened here, gonna quit.";
   exit
 fi
-sudo -k
-echo "Enter the tabadmin password when prompted  - updates being done ..."
-echo
+echo "Checking the NAS IP ..."
+ping -c 5 $nasip
+if [ $? != 0 ]; then
+  echo "NAS doesn't answer pings, gonna quit.";
+  exit
+fi
+echo "Running updates, hit any key to start ..."
+read -s
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y bmon unzip default-jre
+#sudo apt install -y bmon unzip default-jre
 echo
 echo "Take note of the iSCSI ID below then hit any key to continue ..."
 read -s
@@ -42,19 +48,43 @@ sudo nano /etc/iscsi/iscsid.conf
 echo
 echo "Restarting iSCSI service ..."
 sudo systemctl restart iscsid open-iscsi
+if [ $? != 0 ]; then
+  echo "Service didn't restart normally, gonna quit.";
+  exit
+fi
 echo
 echo "Connecting to iSCSI ..."
 sudo iscsiadm -m discovery -t sendtargets -p $nasip
+if [ $? != 0 ]; then
+  echo "Couldn't find any targets, gonna quit.";
+  exit
+fi
 echo
 echo "Logging in to iSCSI ..."
 sudo iscsiadm -m node --login
+if [ $? != 0 ]; then
+  echo "Login failed, gonna quit.";
+  exit
+fi
 echo
 echo "Creating volume ..."
 sudo parted --script $devnm "mklabel gpt"
+if [ $? != 0 ]; then
+  echo "Partitioning failed, gonna quit.";
+  exit
+fi
 sudo parted --script $devnm "mkpart primary 0% 100%"
+if [ $? != 0 ]; then
+  echo "Partitioning failed, gonna quit.";
+  exit
+fi
 echo 
 echo "Formatting volume ..."
 sudo mkfs.xfs -b size=4096 -m reflink=1,crc=1 $devnm -f -K
+if [ $? != 0 ]; then
+  echo "Format failed, gonna quit.";
+  exit
+fi
 echo
 sudo blkid $devnm
 echo "Take note of the UUID above then hit any key to conitnue to edit the fstab file ..."
@@ -63,10 +93,18 @@ echo "Add this line /dev/disk/by-uuid/--the_UUID_FROM ABOVE--/mnt/veeamrepo xfs 
 echo "Hit any key to continue ..."
 read -s
 sudo mkdir /mnt/veeamrepo
+if [ $? != 0 ]; then
+  echo "Couldn't make folder, gonna quit.";
+  exit
+fi
 sudo nano /etc/fstab
 echo
 echo "Attempting to mount volume ..."
 sudo mount -a
+if [ $? != 0 ]; then
+  echo "Mounting failed, gonna quit.";
+  exit
+fi
 echo "Listing volumes mapped to " $devnm "..."
 df -H | grep $devnm
 echo
@@ -75,14 +113,42 @@ read -s
 echo
 echo "Creating veeamuser ..."
 sudo useradd veeamuser --create-home -s /bin/bash
+if [ $? != 0 ]; then
+  echo "Adding the user failed, gonna quit.";
+  exit
+fi
 yes $vupw | sudo passwd veeamuser
+if [ $? != 0 ]; then
+  echo "Setting the password failed, gonna quit.";
+  exit
+fi
 sudo usermod -a -G sudo veeamuser
+if [ $? != 0 ]; then
+  echo "Making the user a SUDO user failed, gonna quit.";
+  exit
+fi
 sudo chown -R veeamuser:veeamuser /mnt/veeamrepo/
+if [ $? != 0 ]; then
+  echo "Setting permissions failed, gonna quit.";
+  exit
+fi
 sudo chmod 700 /mnt/veeamrepo/
+if [ $? != 0 ]; then
+  echo "Setting permissions failed, gonna quit.";
+  exit
+fi
 echo
 echo "Installing LT agent"
 wget -O agent.zip $lturl
+if [ $? != 0 ]; then
+  echo "Getting the LT agent failed, gonna quit.";
+  exit
+fi
 unzip agent.zip
+if [ $? != 0 ]; then
+  echo "Unzipping the agent failed, gonna quit.";
+  exit
+fi
 cd LTechAgent/
 chmod +x install.sh
 sudo ./install.sh
