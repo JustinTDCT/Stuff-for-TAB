@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 clear
-cat > /etc/motd <<EOF
+sudo cat > /etc/motd <<EOF
 ======================================
         type 'sudo ./SetupVeeamVM.sh'
 ======================================
