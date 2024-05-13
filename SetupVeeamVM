@@ -18,7 +18,12 @@ echo
 read -s
 echo "Changing tabadmin password ... this is manual but you wanted to use "$tapw
 sudo passwd -d tabadmin
-passwd
+pwstat=$(passwd 2>&1)
+if echo $pwstat | greg -q "password updated successfully"; then
+  echo "Password changed ok";
+else
+  echo "Password change failed"
+fi
 sudo -k
 echo "Enter the tabadmin password when prompted  - updates being done ..."
 echo
