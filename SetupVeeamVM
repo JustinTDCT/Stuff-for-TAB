@@ -16,7 +16,8 @@ EOF
 echo "Take a checkpoint of the VM now so if something goes wrong you can roll back easily, hit any key when ready ..."
 echo
 read -s
-echo
+echo "Changing tabadmin password ..."
+yes $tapw | sudo passwd tabadmin
 echo "Enter the tabadmin password when prompted  - updates being done ..."
 echo
 sudo apt update
