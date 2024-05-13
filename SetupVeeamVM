@@ -36,8 +36,9 @@ sudo apt update
 sudo apt upgrade -y
 #sudo apt install -y bmon unzip default-jre
 echo
-echo "Stopping iSCSI services ...
+echo "Stopping iSCSI services ..."
 sudo systemctl stop iscsid open-iscsi iscsid.socket
+echo "Updating Initiator Name ..."
 sudo cat > /etc/iscsi/initiatorname.iscsi <<EOF
 iqn.2004-10.com.2022-$host:veeamxfs01:c6b852bc3730
 EOF
