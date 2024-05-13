@@ -35,7 +35,7 @@ echo "Running updates, hit any key to start ..."
 read -s
 sudo apt update
 sudo apt upgrade -y
-#sudo apt install -y bmon unzip default-jre
+sudo apt install -y bmon unzip default-jre
 echo
 echo "Stopping iSCSI services ..."
 sudo systemctl stop iscsid open-iscsi iscsid.socket
@@ -186,6 +186,7 @@ do
   3) NAS IP: $nasip
   4) iSCSI device: $devnm
   5) LT agent URL: $lturl
+  6) HV hostanme: $host
   9) Start
   0) Quit 
 
