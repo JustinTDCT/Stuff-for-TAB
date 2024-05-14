@@ -45,16 +45,19 @@ EOF
   # install apps we want
   sudo apt install -y bmon unzip default-jre
   echo
+  # give the initiator a unique name so it doesn't smash another connection
   echo "Updating Initiator Name ..."
   sudo cat > /etc/iscsi/initiatorname.iscsi <<EOF
 InitiatorName=iqn.2004-10.com.$host:veeamxfs01
 EOF
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Rename didn't take, gonna quit.";
     exit
   fi
   echo "Take note of the iSCSI ID below then hit any key to continue ..."
   read -s
+  # output the initiator info so you can put it in the NAS
   sudo cat /etc/iscsi/initiatorname.iscsi
   echo 
   echo "Make sure you configure the NAS now for iSCSI and provide that ID then hit any key to continue... "
@@ -62,112 +65,146 @@ EOF
   echo
   echo "Hit any key to open the iSCSI config file. Remove the comment before the automatic start and add one before the manual start..."
   read -s
+  # open the iscsid.conf file for editing
   sudo nano /etc/iscsi/iscsid.conf
   echo
   echo "Restarting iSCSI service ..."
+  # restart the iscsi services
   sudo systemctl restart iscsid open-iscsi
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Service didn't restart normally, gonna quit.";
     exit
   fi
   echo
   echo "Connecting to iSCSI ..."
+  # look for iscsi luns on the NAS IP
   sudo iscsiadm -m discovery -t sendtargets -p $nasip
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Couldn't find any targets, gonna quit.";
     exit
   fi
   echo
   echo "Logging in to iSCSI ..."
+  # connect to the LUNs
   sudo iscsiadm -m node --login
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Login failed, gonna quit.";
     exit
   fi
   echo
   echo "Creating volume ..."
+  # make your volumes on the LUN
   sudo parted --script $devnm "mklabel gpt"
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Partitioning failed, gonna quit.";
     exit
   fi
   sudo parted --script $devnm "mkpart primary 0% 100%"
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Partitioning failed, gonna quit.";
     exit
   fi
   echo 
   echo "Formatting volume ..."
+  # format the LUN
   sudo mkfs.xfs -b size=4096 -m reflink=1,crc=1 $devnm -f -K
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Format failed, gonna quit.";
     exit
   fi
   echo
+  # make sure it worked
   sudo blkid $devnm
   echo "Take note of the UUID above then hit any key to conitnue to edit the fstab file ..."
   echo "Add this line /dev/disk/by-uuid/--the_UUID_FROM ABOVE-- /mnt/veeamrepo xfs _netdev 0 0"
   echo "Hit any key to continue ..."
   read -s
+  # make the mount point folder
   sudo mkdir /mnt/veeamrepo
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Couldn't make folder, gonna quit.";
     exit
   fi
+  # open fstab for editing so you can paste the UUID mount in there
   sudo nano /etc/fstab
   echo
   echo "Attempting to mount volume ..."
+  # remount everyhing in fstab
   sudo mount -a
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Mounting failed, gonna quit.";
     exit
   fi
   echo "Listing volumes mapped to " $devnm "..."
+  # list volumes so you can check for your veeam repo
   df -H | grep $devnm
   echo
   echo "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..."
   read -s
   echo
   echo "Creating veeamuser ..."
+  # create the veeam user
   sudo useradd veeamuser --create-home -s /bin/bash
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Adding the user failed, gonna quit.";
     exit
   fi
   echo "Please enter the password for veeamuser - you wanted to use $vupw ..."
+  # set a password for the user
   sudo passwd veeamuser
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Setting the password failed, gonna quit.";
     exit
   fi
+  # make them a SUDOr
   sudo usermod -a -G sudo veeamuser
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Making the user a SUDO user failed, gonna quit.";
     exit
   fi
+  # give them ownership of the mount point
   sudo chown -R veeamuser:veeamuser /mnt/veeamrepo/
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Setting permissions failed, gonna quit.";
     exit
   fi
+  # set permissions so only they can get to it
   sudo chmod 700 /mnt/veeamrepo/
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Setting permissions failed, gonna quit.";
     exit
   fi
   echo
   echo "Installing LT agent"
+  # download the LT agent
   wget -O agent.zip $lturl
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Getting the LT agent failed, gonna quit.";
     exit
   fi
+  # unzip the agent
   unzip agent.zip
+  # make sure the command worked and bail if it didn't
   if [ $? != 0 ]; then
     echo "Unzipping the agent failed, gonna quit.";
     exit
   fi
   cd LTechAgent/
+  # set the installer script as executable then run it
   chmod +x install.sh
   sudo ./install.sh
   echo "Install done, you can verify in the thick client then press any key to continue ..."
@@ -176,12 +213,15 @@ EOF
   echo "Hit any key ..."
   read -s
   echo "Removing veeamuser from SUDO group"
+  # take the veeam user out of SUDO
   sudo usermod -a -G sudo veeamuser
+  # set the login script files so this doesn't run again
   rm /home/tabadmin/stateipset.txt
   echo "VEEAMSET" > /home/tabadmin/stateveeamdone.txt
   exit
 }
 
+# menu look at the start of the script when you run it
 while :
 do
     clear
