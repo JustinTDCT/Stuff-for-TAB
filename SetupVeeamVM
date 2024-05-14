@@ -25,7 +25,7 @@ EOF
   # Change TABADMIN password
   echo "Changing tabadmin password ... this is manual but you wanted to use "$tapw
   sudo passwd -d tabadmin
-  passwd
+  sudo passwd tabadmin
   if [ $? != 0 ]; then
     echo "Something happened here, gonna quit.";
     exit
