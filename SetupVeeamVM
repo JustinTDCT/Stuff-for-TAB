@@ -106,7 +106,7 @@ EOF
   echo
   sudo blkid $devnm
   echo "Take note of the UUID above then hit any key to conitnue to edit the fstab file ..."
-  echo "Add this line /dev/disk/by-uuid/--the_UUID_FROM ABOVE--/mnt/veeamrepo xfs _netdev 0 0"
+  echo "Add this line /dev/disk/by-uuid/--the_UUID_FROM ABOVE-- /mnt/veeamrepo xfs _netdev 0 0"
   echo "Hit any key to continue ..."
   read -s
   sudo mkdir /mnt/veeamrepo
