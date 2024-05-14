@@ -1,12 +1,12 @@
 #!/bin/bash
 echo "Removing scripts and downloading fresh copies ..."
-rm /home/tabadmin/SetupVeeamM.sh
+rm /home/tabadmin/SetupVeeamVM.sh
 rm /home/tabadmin/SetIP.sh
 rm /home/tabadmin/loginscript.sh
-wget -O /home/tabadmin/SetupVeeamM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/SetupVeeamVM
+wget -O /home/tabadmin/SetupVeeamVM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/SetupVeeamVM
 wget -O /home/tabadmin/SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/setip
 wget -O /home/tabadmin/loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/loginscript
-chmod +x /home/tabadmin/SetupVeeamM.sh
+chmod +x /home/tabadmin/SetupVeeamVM.sh
 chmod +x /home/tabadmin/SetIP.sh
 chmod +xX /home/tabadmin/loginscript.sh
 if [ -f /home/tabadmin/statenew.txt ]; then
