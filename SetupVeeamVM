@@ -134,7 +134,8 @@ EOF
     echo "Adding the user failed, gonna quit.";
     exit
   fi
-  yes $vupw | sudo passwd veeamuser
+  echo "Please enter the password for veeamuser - you wanted to use $vupw ..."
+  sudo passwd veeamuser
   if [ $? != 0 ]; then
     echo "Setting the password failed, gonna quit.";
     exit
