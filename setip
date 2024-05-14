@@ -20,12 +20,15 @@ echo
 nic=`ip address | awk 'NR==7{print $2}'`
 echo "Working with" $nic
 # Ask for input on network configuration
+echo "Intentional delay here for 20 seconds ... the login likes to blank the line you're on ... if this still happens you should be entering 3 things:"
+echo "VM IP in CIDR form (IE 192.168.1.100/24), the gateway, then a comma seperated DNS IP list"
 read -p "Enter the static IP of the server in CIDR notation: " staticip 
 read -p "Enter the IP of your gateway: " gatewayip
 read -p "Enter the IP of preferred nameservers (seperated by a coma if more than one): " nameserversip
 echo
 echo "Ready to apply new IP - NOTE: If you are SSH'd in your connection will drop, hit any key to begin ..."
 read -s
+# creates the new YAML file for the IP
 cat > /etc/netplan/00-installer-config.yaml <<EOF
 network:
   ethernets:
@@ -39,13 +42,18 @@ network:
         via: $gatewayip
   version: 2
 EOF
+# sets permissions on the new file
 chown root:root /etc/netplan/00-installer-config.yaml
 chmod 700 /etc/netplan/00-installer-config.yaml
+# applies the new file
 sudo netplan apply
 echo "Pausing for 10sec then listing interfaces ..."
 
 read -t10
+# updates the checks for the login script to help automate setup
 echo "IPSET" > /home/tabadmin/stateipset.txt
 rm /home/tabadmin/statenew.txt
+# output the IP
 ip address
+# read the motd message
 cat /etc/motd
