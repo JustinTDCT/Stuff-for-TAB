@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Checking for script updates ...
+echo "Checking for script updates ..."
 wget -O SetupVeeamM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/SetupVeeamVM
 wget -O SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/setip
 wget -O loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/loginscript
