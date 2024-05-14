@@ -176,8 +176,8 @@ EOF
   read -s
   echo "Removing veeamuser from SUDO group"
   sudo usermod -a -G sudo veeamuser
-  rm ~/stateipset.txt
-  echo "VEEAMSET" > ~/stateveeamdone.txt
+  rm /home/tabadmin/stateipset.txt
+  echo "VEEAMSET" > /home/tabadmin/stateveeamdone.txt
   exit
 }
 
