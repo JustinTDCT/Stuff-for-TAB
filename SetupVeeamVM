@@ -45,11 +45,9 @@ EOF
   # install apps we want
   sudo apt install -y bmon unzip default-jre
   echo
-  echo "Stopping iSCSI services ..."
-  sudo systemctl stop iscsid open-iscsi iscsid.socket
   echo "Updating Initiator Name ..."
   sudo cat > /etc/iscsi/initiatorname.iscsi <<EOF
-InitiatorName=iqn.2004-10.com.$host:veeamxfs01:c6b852bc3730
+InitiatorName=iqn.2004-10.com.$host:veeamxfs01
 EOF
   if [ $? != 0 ]; then
     echo "Rename didn't take, gonna quit.";
@@ -67,7 +65,7 @@ EOF
   sudo nano /etc/iscsi/iscsid.conf
   echo
   echo "Restarting iSCSI service ..."
-  sudo systemctl restart iscsid open-iscsi iscsid.socket
+  sudo systemctl restart iscsid open-iscsi
   if [ $? != 0 ]; then
     echo "Service didn't restart normally, gonna quit.";
     exit
