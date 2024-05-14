@@ -1,22 +1,22 @@
 #!/bin/bash
 echo "Checking for script updates ..."
-wget -O SetupVeeamM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/SetupVeeamVM
-wget -O SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/setip
-wget -O loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/loginscript
+wget -O /home/tabadmin/SetupVeeamM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/SetupVeeamVM
+wget -O /home/tabadmin/SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/setip
+wget -O home/tabadmin/loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/loginscript
 
-if [ -f ~/statenew.txt ]; then
+if [ -f /home/tabadmin/statenew.txt ]; then
     echo "First time being run, setup the IP ..."
     read -t5
-    sudo ./SetIP.sh
+    sudo /home/tabadmin/./SetIP.sh
     exit
 fi
-if [ -f ~/stateipset.txt ]; then
+if [ -f /home/tabadmin/stateipset.txt ]; then
     echo "Looks like the IP was already set - gonna start the Veeam setup script ..."
     read -t5
-    sudo ./SetupVeeamVM.sh
+    sudo /home/tabadmin/./SetupVeeamVM.sh
     exit
 fi
-if [ -f ~/stateveeamdone.txt ]; then
+if [ -f /home/tabadmin/stateveeamdone.txt ]; then
     echo "Veeam should be already setup, exiting ..."
     exit
 fi
