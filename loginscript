@@ -16,3 +16,7 @@ if [ -f ~/stateipset.txt ]; then
     sudo ./SetupVeeamVM.sh
     exit
 fi
+if [ -f ~/stateveeamdone.txt ]; then
+    echo "Veeam should be already setup, exiting ..."
+    exit
+fi
