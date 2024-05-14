@@ -46,5 +46,6 @@ echo "Pausing for 10sec then listing interfaces ..."
 
 read -t10
 echo "IPSET" > ~/stateipset.txt
+rm ~/statenew.txt
 ip address
 cat /etc/motd
