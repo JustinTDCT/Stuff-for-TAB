@@ -3,7 +3,7 @@
 clear
 sudo cat > /etc/motd <<EOF
 ======================================
-        type 'sudo ./SetupVeeamVM.sh'
+        type ./SetupVeeamVM.sh
 ======================================
 EOF
 echo "Creating a backup of the current profile ..."
