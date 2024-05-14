@@ -45,5 +45,6 @@ sudo netplan apply
 echo "Pausing for 10sec then listing interfaces ..."
 
 read -t10
+echo "IPSET" > ~/stateipset.txt
 ip address
 cat /etc/motd
