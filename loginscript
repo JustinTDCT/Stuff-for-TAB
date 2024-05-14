@@ -1,26 +1,32 @@
 #!/bin/bash
 echo "Removing scripts and downloading fresh copies ..."
+# remove existing files
 rm /home/tabadmin/SetupVeeamVM.sh
 rm /home/tabadmin/SetIP.sh
 rm /home/tabadmin/loginscript.sh
+# get newest files
 wget -O /home/tabadmin/SetupVeeamVM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/SetupVeeamVM
 wget -O /home/tabadmin/SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/setip
 wget -O /home/tabadmin/loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/loginscript
+# make the files executable
 chmod +x /home/tabadmin/SetupVeeamVM.sh
 chmod +x /home/tabadmin/SetIP.sh
 chmod +xX /home/tabadmin/loginscript.sh
+# check if this is a fresh install, if so kick off the IP script
 if [ -f /home/tabadmin/statenew.txt ]; then
     echo "First time being run, setup the IP ..."
     read -t5
     sudo /home/tabadmin/./SetIP.sh
     exit
 fi
+# check if the IP is set, if so kick off the setup script
 if [ -f /home/tabadmin/stateipset.txt ]; then
     echo "Looks like the IP was already set - gonna start the Veeam setup script ..."
     read -t5
     sudo /home/tabadmin/./SetupVeeamVM.sh
     exit
 fi
+# check if the setup script is done, if so bail
 if [ -f /home/tabadmin/stateveeamdone.txt ]; then
     echo "Veeam should be already setup, exiting ..."
     exit
