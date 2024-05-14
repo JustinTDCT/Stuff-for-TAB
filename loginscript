@@ -1,3 +1,18 @@
+#!/bin/bash
 echo "Checking for script updates ...
 wget -O SetupVeeamM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/SetupVeeamVM
 wget -O SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/setip
+wget -O loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/loginscript
+
+if [ -f ~/statenew.txt ]; then
+    echo "First time being run, setup the IP ..."
+    read -s
+    sudo ./SetupIP.sh
+    exit
+fi
+if [ -f ~/stateipset.txt ]; then
+    echo "Looks like the IP was already set - gonna start the Veeam setup script ..."
+    read -s
+    sudo ./SetupVeeamVM.sh
+    exit
+fi
