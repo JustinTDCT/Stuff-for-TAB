@@ -3,7 +3,8 @@
 clear
 sudo cat > /etc/motd <<EOF
 ======================================
-        type ./SetupVeeamVM.sh
+    You have set the IP correctly!
+    now, type sudo./SetupVeeamVM.sh
 ======================================
 EOF
 echo "Creating a backup of the current profile ..."
