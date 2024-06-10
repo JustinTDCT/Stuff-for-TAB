@@ -24,6 +24,7 @@ if [ -f /home/tabadmin/script_runs.cfg ]; then
         set_uuid) set_uuid ;;
         create_veeam_user) create_veeam_user ;;
         *) change_tabadmin_pw ;;
+    esac
 fi
 
 # Function to actually do install
