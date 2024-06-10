@@ -242,6 +242,7 @@ if [ -f /home/tabadmin/script_runs.cfg ]; then
     devnm=$(sed '5q;d' /home/tabadmin/script_runs.cfg)
     host=$(sed '6q;d' /home/tabadmin/script_runs.cfg)
     curstate=$(sed '1q;d' /home/tabadmin/script_state.cfg)
+    echo $curstate
     case $curstate in
         change_nas_ip) echo "Jumping to setting the NAS IP ...."
                         change_nas_ip ;;
