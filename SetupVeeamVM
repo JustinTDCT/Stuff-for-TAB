@@ -110,7 +110,7 @@ set_uuid () {
   echo "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..."
   read -s
   echo
-  echo create_veeam_user > /home/tabadmin/script_runs.cfg
+  sed -i '7i\create_veeam_user' /home/tabadmin/script_runs.cfg
   create_veeam_user
 }
 edit_scsi_conf () {
@@ -172,7 +172,7 @@ edit_scsi_conf () {
   fi
   echo
   # make sure it worked
-  echo set_uuid > /home/tabadmin/script_runs.cfg
+  sed -i '7i\set_uuid' /home/tabadmin/script_runs.cfg
   set_uuid
 }
 set_initiator () {
@@ -193,7 +193,7 @@ EOF
   echo 
   echo "Make sure you configure the NAS now for iSCSI and provide that ID then hit any key to continue... "
   read -s
-  echo edit_scsi_conf > /home/tabadmin/script_runs.cfg
+  sed -i '7i\edit_scsi_conf' /home/tabadmin/script_runs.cfg
   edit_scsi_conf
 }
 do_updates () {
@@ -205,7 +205,7 @@ do_updates () {
   # install apps we want
   sudo apt install -y bmon unzip default-jre
   echo
-  echo set_initiator > /home/tabadmin/script_runs.cfg
+  sed -i '7i\set_initiator' /home/tabadmin/script_runs.cfg
 set_initiator
 }
 change_nas_ip () {
@@ -216,7 +216,7 @@ change_nas_ip () {
     echo "NAS doesn't answer pings, gonna quit.";
     exit
   fi
-  echo do_updates > /home/tabadmin/script_runs.cfg
+  sed -i '7i\do_updates' /home/tabadmin/script_runs.cfg
   do_updates
 }
 change_tabadmin_pw () {
@@ -227,7 +227,7 @@ change_tabadmin_pw () {
     echo "Something happened here, gonna quit.";
     exit
   fi
-  echo change_nas_ip > /home/tabadmin/script_runs.cfg
+  sed -i '7i\change_nas_ip' /home/tabadmin/script_runs.cfg
   change_nas_ip
 }
 
