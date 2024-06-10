@@ -15,13 +15,16 @@ if [ -f /home/tabadmin/script_runs.cfg ]; then
     lturl=$(sed '4q;d' /home/tabadmin/script_runs.cfg)
     devnm=$(sed '5q;d' /home/tabadmin/script_runs.cfg)
     host=$(sed '6q;d' /home/tabadmin/script_runs.cfg)
+    curstate=$(sed '7q;d' /home/tabadmin/script_runs.cfg)
+    case $curstate in
+        change_nas_ip) change_nas_ip ;;
+        do_updates) do_updates ;;
+        set_initiator) set_initiator ;;
+        edit_scsi_conf) edit_scsi_conf ;;
+        set_uuid) set_uuid ;;
+        create_veeam_user) create_veeam_user ;;
+        *) change_tabadmin_pw ;;
 fi
-echo $vupw > /home/tabadmin/script_runs.cfg
-echo $tapw >> /home/tabadmin/script_runs.cfg
-echo $nasip >> /home/tabadmin/script_runs.cfg
-echo $lturl >> /home/tabadmin/script_runs.cfg
-echo $devnm >> /home/tabadmin/script_runs.cfg
-echo $host >> /home/tabadmin/script_runs.cfg
 
 # Function to actually do install
 installfunction () {
@@ -33,7 +36,14 @@ installfunction () {
   - iSCSI device: $devnm
   - LT URL: $lturl
   - HVHOST: $host
-  
+echo $vupw > /home/tabadmin/script_runs.cfg
+echo $tapw >> /home/tabadmin/script_runs.cfg
+echo $nasip >> /home/tabadmin/script_runs.cfg
+echo $lturl >> /home/tabadmin/script_runs.cfg
+echo $devnm >> /home/tabadmin/script_runs.cfg
+echo $host >> /home/tabadmin/script_runs.cfg
+    
+
 
 EOF
   echo "Take a checkpoint of the VM now so if something goes wrong you can roll back easily, hit any key when ready ..."
@@ -50,6 +60,7 @@ change_tabadmin_pw () {
     echo "Something happened here, gonna quit.";
     exit
   fi
+  echo change_nas_ip >> /home/tabadmin/script_runs.cfg
   change_nas_ip
 }
 change_nas_ip () {
@@ -60,6 +71,7 @@ change_nas_ip () {
     echo "NAS doesn't answer pings, gonna quit.";
     exit
   fi
+  echo do_updates >> /home/tabadmin/script_runs.cfg
   do_updates
 }
 do_updates () {
@@ -71,7 +83,8 @@ do_updates () {
   # install apps we want
   sudo apt install -y bmon unzip default-jre
   echo
-  set_initiator
+  echo set_initiator >> /home/tabadmin/script_runs.cfg
+set_initiator
 }
 set_initiator () {
   # give the initiator a unique name so it doesn't smash another connection
@@ -91,6 +104,7 @@ EOF
   echo 
   echo "Make sure you configure the NAS now for iSCSI and provide that ID then hit any key to continue... "
   read -s
+  echo edit_scsi_conf >> /home/tabadmin/script_runs.cfg
   edit_scsi_conf
 }
 edit_scsi_conf () {
@@ -152,6 +166,7 @@ edit_scsi_conf () {
   fi
   echo
   # make sure it worked
+  echo set_uuid >> /home/tabadmin/script_runs.cfg
   set_uuid
 }
 set_uuid () {
@@ -185,6 +200,7 @@ set_uuid () {
   echo "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..."
   read -s
   echo
+  echo create_veeam_user >> /home/tabadmin/script_runs.cfg
   create_veeam_user
 }
 create_veeam_user () {
@@ -256,6 +272,7 @@ create_veeam_user () {
   # set the login script files so this doesn't run again
   rm /home/tabadmin/stateipset.txt
   echo "VEEAMSET" > /home/tabadmin/stateveeamdone.txt
+  rm -f /home/tabadmin/script_runs.cfg
   exit
 }
 
