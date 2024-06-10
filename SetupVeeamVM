@@ -6,6 +6,16 @@ nasip="NOT SET"
 lturl="NOT SET"
 devnm="/dev/sdb"
 host="NOT SET"
+if [ -f /home/tabadmin/script_runs.cfg ]; then
+    echo "This script has been run before, importing values used in the past ..."
+    read -t5
+    vupw=$(sed '1q;d' /home/tabadmin/script_runs.cfg)
+    tapw=$(sed '2q;d' /home/tabadmin/script_runs.cfg)
+    nasip=$(sed '3q;d' /home/tabadmin/script_runs.cfg)
+    lturl=$(sed '4q;d' /home/tabadmin/script_runs.cfg)
+    devnm=$(sed '5q;d' /home/tabadmin/script_runs.cfg)
+    host=$(sed '6q;d' /home/tabadmin/script_runs.cfg)
+fi
 
 
 # Function to actually do install
