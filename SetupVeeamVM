@@ -6,210 +6,7 @@ nasip="NOT SET"
 lturl="NOT SET"
 devnm="/dev/sdb"
 host="NOT SET"
-if [ -f /home/tabadmin/script_runs.cfg ]; then
-    echo "This script has been run before, importing values used in the past and will try to pickup where you left off ..."
-    read -t5
-    vupw=$(sed '1q;d' /home/tabadmin/script_runs.cfg)
-    tapw=$(sed '2q;d' /home/tabadmin/script_runs.cfg)
-    nasip=$(sed '3q;d' /home/tabadmin/script_runs.cfg)
-    lturl=$(sed '4q;d' /home/tabadmin/script_runs.cfg)
-    devnm=$(sed '5q;d' /home/tabadmin/script_runs.cfg)
-    host=$(sed '6q;d' /home/tabadmin/script_runs.cfg)
-    curstate=$(sed '7q;d' /home/tabadmin/script_runs.cfg)
-    case $curstate in
-        change_nas_ip) echo "Jumping to setting the NAS IP ...."
-                        change_nas_ip ;;
-        do_updates) echo "Jumping to do updates ..."
-                        do_updates ;;
-        set_initiator) echo "Jumping to set the initiator and NAS ..."
-                        set_initiator ;;
-        edit_scsi_conf) echo "Jumping to edit the iSCSI config ..."
-                        edit_scsi_conf ;;
-        set_uuid) echo "Jumping to set the UUID and edit FSTAB ..."
-                        set_uuid ;;
-        create_veeam_user) echo "Jumping to create the veeam user ..."
-                        create_veeam_user ;;
-        *) echo "Not sure where you left off, starting over ..."
-            change_tabadmin_pw ;;
-    esac
-    read -t5
-fi
 
-# Function to actually do install
-installfunction () {
-  cat<<EOF
-  Starting setup using:
-  - veeamuser password: $vupw
-  - tabadmin password: $tapw
-  - NAS IP: $nasip
-  - iSCSI device: $devnm
-  - LT URL: $lturl
-  - HVHOST: $host
-
-EOF
-echo $vupw > /home/tabadmin/script_runs.cfg
-echo $tapw >> /home/tabadmin/script_runs.cfg
-echo $nasip >> /home/tabadmin/script_runs.cfg
-echo $lturl >> /home/tabadmin/script_runs.cfg
-echo $devnm >> /home/tabadmin/script_runs.cfg
-echo $host >> /home/tabadmin/script_runs.cfg
-  echo "Take a checkpoint of the VM now so if something goes wrong you can roll back easily, hit any key when ready ..."
-  read -s
-  echo
-  # Change TABADMIN password
-  change_tabadmin_pw
-}
-change_tabadmin_pw () {
-  echo "Changing tabadmin password ... this is manual but you wanted to use "$tapw
-  sudo passwd -d tabadmin
-  sudo passwd tabadmin
-  if [ $? != 0 ]; then
-    echo "Something happened here, gonna quit.";
-    exit
-  fi
-  echo change_nas_ip >> /home/tabadmin/script_runs.cfg
-  change_nas_ip
-}
-change_nas_ip () {
-  # Check the NAS IP is reachable
-  echo "Checking the NAS IP ..."
-  ping -c 5 $nasip
-  if [ $? != 0 ]; then
-    echo "NAS doesn't answer pings, gonna quit.";
-    exit
-  fi
-  echo do_updates >> /home/tabadmin/script_runs.cfg
-  do_updates
-}
-do_updates () {
-  # Update base OS
-  echo "Running updates, hit any key to start ..."
-  read -s
-  sudo apt update
-  sudo apt upgrade -y
-  # install apps we want
-  sudo apt install -y bmon unzip default-jre
-  echo
-  echo set_initiator >> /home/tabadmin/script_runs.cfg
-set_initiator
-}
-set_initiator () {
-  # give the initiator a unique name so it doesn't smash another connection
-  echo "Updating Initiator Name ..."
-  sudo cat > /etc/iscsi/initiatorname.iscsi <<EOF
-InitiatorName=iqn.2004-10.com.$host:veeamxfs01
-EOF
-  # make sure the command worked and bail if it didn't
-  if [ $? != 0 ]; then
-    echo "Rename didn't take, gonna quit.";
-    exit
-  fi
-  echo "Take note of the iSCSI ID below then hit any key to continue ..."
-  read -s
-  # output the initiator info so you can put it in the NAS
-  sudo cat /etc/iscsi/initiatorname.iscsi
-  echo 
-  echo "Make sure you configure the NAS now for iSCSI and provide that ID then hit any key to continue... "
-  read -s
-  echo edit_scsi_conf >> /home/tabadmin/script_runs.cfg
-  edit_scsi_conf
-}
-edit_scsi_conf () {
-  echo
-  echo "Hit any key to open the iSCSI config file. Remove the comment before the automatic start and add one before the manual start..."
-  read -s
-  # open the iscsid.conf file for editing
-  sudo nano /etc/iscsi/iscsid.conf
-  echo
-  echo "Restarting iSCSI service ..."
-  # restart the iscsi services
-  sudo systemctl restart iscsid open-iscsi
-  # make sure the command worked and bail if it didn't
-  if [ $? != 0 ]; then
-    echo "Service didn't restart normally, gonna quit.";
-    exit
-  fi
-  echo
-  echo "Connecting to iSCSI ..."
-  # look for iscsi luns on the NAS IP
-  sudo iscsiadm -m discovery -t sendtargets -p $nasip
-  # make sure the command worked and bail if it didn't
-  if [ $? != 0 ]; then
-    echo "Couldn't find any targets, gonna quit.";
-    exit
-  fi
-  echo
-  echo "Logging in to iSCSI ..."
-  # connect to the LUNs
-  sudo iscsiadm -m node --login
-  # make sure the command worked and bail if it didn't
-  if [ $? != 0 ]; then
-    echo "Login failed, gonna quit.";
-    exit
-  fi
-  echo
-  echo "Creating volume ..."
-  # make your volumes on the LUN
-  sudo parted --script $devnm "mklabel gpt"
-  # make sure the command worked and bail if it didn't
-  if [ $? != 0 ]; then
-    echo "Partitioning failed, gonna quit.";
-    exit
-  fi
-  sudo parted --script $devnm "mkpart primary 0% 100%"
-  # make sure the command worked and bail if it didn't
-  if [ $? != 0 ]; then
-    echo "Partitioning failed, gonna quit.";
-    exit
-  fi
-  echo 
-  echo "Formatting volume ..."
-  # format the LUN
-  sudo mkfs.xfs -b size=4096 -m reflink=1,crc=1 $devnm -f -K
-  # make sure the command worked and bail if it didn't
-  if [ $? != 0 ]; then
-    echo "Format failed, gonna quit.";
-    exit
-  fi
-  echo
-  # make sure it worked
-  echo set_uuid >> /home/tabadmin/script_runs.cfg
-  set_uuid
-}
-set_uuid () {
-  sudo blkid $devnm
-  echo "Take note of the UUID above then hit any key to conitnue to edit the fstab file ..."
-  echo "Add this line /dev/disk/by-uuid/--the_UUID_FROM ABOVE-- /mnt/veeamrepo xfs _netdev 0 0"
-  echo "Hit any key to continue ..."
-  read -s
-  # make the mount point folder
-  sudo mkdir /mnt/veeamrepo
-  # make sure the command worked and bail if it didn't
-  if [ $? != 0 ]; then
-    echo "Couldn't make folder, gonna quit.";
-    exit
-  fi
-  # open fstab for editing so you can paste the UUID mount in there
-  sudo nano /etc/fstab
-  echo
-  echo "Attempting to mount volume ..."
-  # remount everyhing in fstab
-  sudo mount -a
-  # make sure the command worked and bail if it didn't
-  if [ $? != 0 ]; then
-    echo "Mounting failed, gonna quit.";
-    exit
-  fi
-  echo "Listing volumes mapped to " $devnm "..."
-  # list volumes so you can check for your veeam repo
-  df -H | grep $devnm
-  echo
-  echo "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..."
-  read -s
-  echo
-  echo create_veeam_user >> /home/tabadmin/script_runs.cfg
-  create_veeam_user
-}
 create_veeam_user () {
   echo "Creating veeamuser ..."
   # create the veeam user
@@ -281,6 +78,211 @@ create_veeam_user () {
   echo "VEEAMSET" > /home/tabadmin/stateveeamdone.txt
   rm -f /home/tabadmin/script_runs.cfg
   exit
+}
+set_uuid () {
+  sudo blkid $devnm
+  echo "Take note of the UUID above then hit any key to conitnue to edit the fstab file ..."
+  echo "Add this line /dev/disk/by-uuid/--the_UUID_FROM ABOVE-- /mnt/veeamrepo xfs _netdev 0 0"
+  echo "Hit any key to continue ..."
+  read -s
+  # make the mount point folder
+  sudo mkdir /mnt/veeamrepo
+  # make sure the command worked and bail if it didn't
+  if [ $? != 0 ]; then
+    echo "Couldn't make folder, gonna quit.";
+    exit
+  fi
+  # open fstab for editing so you can paste the UUID mount in there
+  sudo nano /etc/fstab
+  echo
+  echo "Attempting to mount volume ..."
+  # remount everyhing in fstab
+  sudo mount -a
+  # make sure the command worked and bail if it didn't
+  if [ $? != 0 ]; then
+    echo "Mounting failed, gonna quit.";
+    exit
+  fi
+  echo "Listing volumes mapped to " $devnm "..."
+  # list volumes so you can check for your veeam repo
+  df -H | grep $devnm
+  echo
+  echo "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..."
+  read -s
+  echo
+  echo create_veeam_user >> /home/tabadmin/script_runs.cfg
+  create_veeam_user
+}
+edit_scsi_conf () {
+  echo
+  echo "Hit any key to open the iSCSI config file. Remove the comment before the automatic start and add one before the manual start..."
+  read -s
+  # open the iscsid.conf file for editing
+  sudo nano /etc/iscsi/iscsid.conf
+  echo
+  echo "Restarting iSCSI service ..."
+  # restart the iscsi services
+  sudo systemctl restart iscsid open-iscsi
+  # make sure the command worked and bail if it didn't
+  if [ $? != 0 ]; then
+    echo "Service didn't restart normally, gonna quit.";
+    exit
+  fi
+  echo
+  echo "Connecting to iSCSI ..."
+  # look for iscsi luns on the NAS IP
+  sudo iscsiadm -m discovery -t sendtargets -p $nasip
+  # make sure the command worked and bail if it didn't
+  if [ $? != 0 ]; then
+    echo "Couldn't find any targets, gonna quit.";
+    exit
+  fi
+  echo
+  echo "Logging in to iSCSI ..."
+  # connect to the LUNs
+  sudo iscsiadm -m node --login
+  # make sure the command worked and bail if it didn't
+  if [ $? != 0 ]; then
+    echo "Login failed, gonna quit.";
+    exit
+  fi
+  echo
+  echo "Creating volume ..."
+  # make your volumes on the LUN
+  sudo parted --script $devnm "mklabel gpt"
+  # make sure the command worked and bail if it didn't
+  if [ $? != 0 ]; then
+    echo "Partitioning failed, gonna quit.";
+    exit
+  fi
+  sudo parted --script $devnm "mkpart primary 0% 100%"
+  # make sure the command worked and bail if it didn't
+  if [ $? != 0 ]; then
+    echo "Partitioning failed, gonna quit.";
+    exit
+  fi
+  echo 
+  echo "Formatting volume ..."
+  # format the LUN
+  sudo mkfs.xfs -b size=4096 -m reflink=1,crc=1 $devnm -f -K
+  # make sure the command worked and bail if it didn't
+  if [ $? != 0 ]; then
+    echo "Format failed, gonna quit.";
+    exit
+  fi
+  echo
+  # make sure it worked
+  echo set_uuid >> /home/tabadmin/script_runs.cfg
+  set_uuid
+}
+set_initiator () {
+  # give the initiator a unique name so it doesn't smash another connection
+  echo "Updating Initiator Name ..."
+  sudo cat > /etc/iscsi/initiatorname.iscsi <<EOF
+InitiatorName=iqn.2004-10.com.$host:veeamxfs01
+EOF
+  # make sure the command worked and bail if it didn't
+  if [ $? != 0 ]; then
+    echo "Rename didn't take, gonna quit.";
+    exit
+  fi
+  echo "Take note of the iSCSI ID below then hit any key to continue ..."
+  read -s
+  # output the initiator info so you can put it in the NAS
+  sudo cat /etc/iscsi/initiatorname.iscsi
+  echo 
+  echo "Make sure you configure the NAS now for iSCSI and provide that ID then hit any key to continue... "
+  read -s
+  echo edit_scsi_conf >> /home/tabadmin/script_runs.cfg
+  edit_scsi_conf
+}
+do_updates () {
+  # Update base OS
+  echo "Running updates, hit any key to start ..."
+  read -s
+  sudo apt update
+  sudo apt upgrade -y
+  # install apps we want
+  sudo apt install -y bmon unzip default-jre
+  echo
+  echo set_initiator >> /home/tabadmin/script_runs.cfg
+set_initiator
+}
+change_nas_ip () {
+  # Check the NAS IP is reachable
+  echo "Checking the NAS IP ..."
+  ping -c 5 $nasip
+  if [ $? != 0 ]; then
+    echo "NAS doesn't answer pings, gonna quit.";
+    exit
+  fi
+  echo do_updates >> /home/tabadmin/script_runs.cfg
+  do_updates
+}
+change_tabadmin_pw () {
+  echo "Changing tabadmin password ... this is manual but you wanted to use "$tapw
+  sudo passwd -d tabadmin
+  sudo passwd tabadmin
+  if [ $? != 0 ]; then
+    echo "Something happened here, gonna quit.";
+    exit
+  fi
+  echo change_nas_ip >> /home/tabadmin/script_runs.cfg
+  change_nas_ip
+}
+
+if [ -f /home/tabadmin/script_runs.cfg ]; then
+    echo "This script has been run before, importing values used in the past and will try to pickup where you left off ..."
+    read -t5
+    vupw=$(sed '1q;d' /home/tabadmin/script_runs.cfg)
+    tapw=$(sed '2q;d' /home/tabadmin/script_runs.cfg)
+    nasip=$(sed '3q;d' /home/tabadmin/script_runs.cfg)
+    lturl=$(sed '4q;d' /home/tabadmin/script_runs.cfg)
+    devnm=$(sed '5q;d' /home/tabadmin/script_runs.cfg)
+    host=$(sed '6q;d' /home/tabadmin/script_runs.cfg)
+    curstate=$(sed '7q;d' /home/tabadmin/script_runs.cfg)
+    case $curstate in
+        change_nas_ip) echo "Jumping to setting the NAS IP ...."
+                        change_nas_ip ;;
+        do_updates) echo "Jumping to do updates ..."
+                        do_updates ;;
+        set_initiator) echo "Jumping to set the initiator and NAS ..."
+                        set_initiator ;;
+        edit_scsi_conf) echo "Jumping to edit the iSCSI config ..."
+                        edit_scsi_conf ;;
+        set_uuid) echo "Jumping to set the UUID and edit FSTAB ..."
+                        set_uuid ;;
+        create_veeam_user) echo "Jumping to create the veeam user ..."
+                        create_veeam_user ;;
+        *) echo "Not sure where you left off, starting over ..."
+            change_tabadmin_pw ;;
+    esac
+    read -t5
+fi
+
+# Function to actually do install
+installfunction () {
+  cat<<EOF
+  Starting setup using:
+  - veeamuser password: $vupw
+  - tabadmin password: $tapw
+  - NAS IP: $nasip
+  - iSCSI device: $devnm
+  - LT URL: $lturl
+  - HVHOST: $host
+
+EOF
+echo $vupw > /home/tabadmin/script_runs.cfg
+echo $tapw >> /home/tabadmin/script_runs.cfg
+echo $nasip >> /home/tabadmin/script_runs.cfg
+echo $lturl >> /home/tabadmin/script_runs.cfg
+echo $devnm >> /home/tabadmin/script_runs.cfg
+echo $host >> /home/tabadmin/script_runs.cfg
+  echo "Take a checkpoint of the VM now so if something goes wrong you can roll back easily, hit any key when ready ..."
+  read -s
+  echo
+  # Change TABADMIN password
+  change_tabadmin_pw
 }
 
 # menu look at the start of the script when you run it
