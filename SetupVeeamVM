@@ -23,6 +23,9 @@ EOF
   read -s
   echo
   # Change TABADMIN password
+  change_tabadmin_pw
+}
+change_tabadmin_pw () {
   echo "Changing tabadmin password ... this is manual but you wanted to use "$tapw
   sudo passwd -d tabadmin
   sudo passwd tabadmin
@@ -30,6 +33,9 @@ EOF
     echo "Something happened here, gonna quit.";
     exit
   fi
+  change_nas_ip
+}
+change_nas_ip () {
   # Check the NAS IP is reachable
   echo "Checking the NAS IP ..."
   ping -c 5 $nasip
@@ -37,6 +43,9 @@ EOF
     echo "NAS doesn't answer pings, gonna quit.";
     exit
   fi
+  do_updates
+}
+do_updates () {
   # Update base OS
   echo "Running updates, hit any key to start ..."
   read -s
@@ -45,6 +54,9 @@ EOF
   # install apps we want
   sudo apt install -y bmon unzip default-jre
   echo
+  set_initiator
+}
+set_initiator () {
   # give the initiator a unique name so it doesn't smash another connection
   echo "Updating Initiator Name ..."
   sudo cat > /etc/iscsi/initiatorname.iscsi <<EOF
@@ -62,6 +74,9 @@ EOF
   echo 
   echo "Make sure you configure the NAS now for iSCSI and provide that ID then hit any key to continue... "
   read -s
+  edit_scsi_conf
+}
+edit_scsi_conf () {
   echo
   echo "Hit any key to open the iSCSI config file. Remove the comment before the automatic start and add one before the manual start..."
   read -s
@@ -120,6 +135,9 @@ EOF
   fi
   echo
   # make sure it worked
+  set_uuid
+}
+set_uuid () {
   sudo blkid $devnm
   echo "Take note of the UUID above then hit any key to conitnue to edit the fstab file ..."
   echo "Add this line /dev/disk/by-uuid/--the_UUID_FROM ABOVE-- /mnt/veeamrepo xfs _netdev 0 0"
@@ -150,6 +168,9 @@ EOF
   echo "Does this look right? If so hit any key otherwise CTRL+BREAK now and bail ..."
   read -s
   echo
+  create_veeam_user
+}
+create_veeam_user () {
   echo "Creating veeamuser ..."
   # create the veeam user
   sudo useradd veeamuser --create-home -s /bin/bash
