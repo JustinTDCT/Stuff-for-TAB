@@ -241,7 +241,7 @@ if [ -f /home/tabadmin/script_runs.cfg ]; then
     lturl=$(sed '4q;d' /home/tabadmin/script_runs.cfg)
     devnm=$(sed '5q;d' /home/tabadmin/script_runs.cfg)
     host=$(sed '6q;d' /home/tabadmin/script_runs.cfg)
-    curstate=$(sed '7q;d' /home/tabadmin/script_state.cfg)
+    curstate=$(sed '1q;d' /home/tabadmin/script_state.cfg)
     case $curstate in
         change_nas_ip) echo "Jumping to setting the NAS IP ...."
                         change_nas_ip ;;
