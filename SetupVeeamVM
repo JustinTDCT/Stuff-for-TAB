@@ -1,4 +1,4 @@
-#!/bin/bash  
+h#!/bin/bash  
 # Set variable defaults
 vupw="NOT SET"
 tapw="NOT SET"
@@ -16,7 +16,12 @@ if [ -f /home/tabadmin/script_runs.cfg ]; then
     devnm=$(sed '5q;d' /home/tabadmin/script_runs.cfg)
     host=$(sed '6q;d' /home/tabadmin/script_runs.cfg)
 fi
-
+echo $vupw > /home/tabadmin/script_runs.cfg
+echo $tapw >> /home/tabadmin/script_runs.cfg
+echo $nasip >> /home/tabadmin/script_runs.cfg
+echo $lturl >> /home/tabadmin/script_runs.cfg
+echo $devnm >> /home/tabadmin/script_runs.cfg
+echo $host >> /home/tabadmin/script_runs.cfg
 
 # Function to actually do install
 installfunction () {
