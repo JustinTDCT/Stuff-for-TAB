@@ -7,6 +7,7 @@ lturl="NOT SET"
 devnm="/dev/sdb"
 host="NOT SET"
 
+
 # Function to actually do install
 installfunction () {
   cat<<EOF
@@ -17,6 +18,7 @@ installfunction () {
   - iSCSI device: $devnm
   - LT URL: $lturl
   - HVHOST: $host
+  
 
 EOF
   echo "Take a checkpoint of the VM now so if something goes wrong you can roll back easily, hit any key when ready ..."
