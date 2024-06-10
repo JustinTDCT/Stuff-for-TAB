@@ -1,4 +1,4 @@
-h#!/bin/bash  
+#!/bin/bash  
 # Set variable defaults
 vupw="NOT SET"
 tapw="NOT SET"
