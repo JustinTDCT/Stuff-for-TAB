@@ -32,6 +32,7 @@ if [ -f /home/tabadmin/script_runs.cfg ]; then
         *) echo "Not sure where you left off, starting over ..."
             change_tabadmin_pw ;;
     esac
+    read -t5
 fi
 
 # Function to actually do install
