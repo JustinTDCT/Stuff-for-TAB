@@ -37,16 +37,14 @@ installfunction () {
   - iSCSI device: $devnm
   - LT URL: $lturl
   - HVHOST: $host
+
+EOF
 echo $vupw > /home/tabadmin/script_runs.cfg
 echo $tapw >> /home/tabadmin/script_runs.cfg
 echo $nasip >> /home/tabadmin/script_runs.cfg
 echo $lturl >> /home/tabadmin/script_runs.cfg
 echo $devnm >> /home/tabadmin/script_runs.cfg
 echo $host >> /home/tabadmin/script_runs.cfg
-    
-
-
-EOF
   echo "Take a checkpoint of the VM now so if something goes wrong you can roll back easily, hit any key when ready ..."
   read -s
   echo
