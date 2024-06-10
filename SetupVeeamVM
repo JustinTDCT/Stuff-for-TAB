@@ -7,7 +7,7 @@ lturl="NOT SET"
 devnm="/dev/sdb"
 host="NOT SET"
 if [ -f /home/tabadmin/script_runs.cfg ]; then
-    echo "This script has been run before, importing values used in the past ..."
+    echo "This script has been run before, importing values used in the past and will try to pickup where you left off ..."
     read -t5
     vupw=$(sed '1q;d' /home/tabadmin/script_runs.cfg)
     tapw=$(sed '2q;d' /home/tabadmin/script_runs.cfg)
@@ -17,13 +17,20 @@ if [ -f /home/tabadmin/script_runs.cfg ]; then
     host=$(sed '6q;d' /home/tabadmin/script_runs.cfg)
     curstate=$(sed '7q;d' /home/tabadmin/script_runs.cfg)
     case $curstate in
-        change_nas_ip) change_nas_ip ;;
-        do_updates) do_updates ;;
-        set_initiator) set_initiator ;;
-        edit_scsi_conf) edit_scsi_conf ;;
-        set_uuid) set_uuid ;;
-        create_veeam_user) create_veeam_user ;;
-        *) change_tabadmin_pw ;;
+        change_nas_ip) echo "Jumping to setting the NAS IP ...."
+                        change_nas_ip ;;
+        do_updates) echo "Jumping to do updates ..."
+                        do_updates ;;
+        set_initiator) echo "Jumping to set the initiator and NAS ..."
+                        set_initiator ;;
+        edit_scsi_conf) echo "Jumping to edit the iSCSI config ..."
+                        edit_scsi_conf ;;
+        set_uuid) echo "Jumping to set the UUID and edit FSTAB ..."
+                        set_uuid ;;
+        create_veeam_user) echo "Jumping to create the veeam user ..."
+                        create_veeam_user ;;
+        *) echo "Not sure where you left off, starting over ..."
+            change_tabadmin_pw ;;
     esac
 fi
 
