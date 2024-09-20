@@ -1,12 +1,5 @@
 #!/bin/bash
 #
-clear
-sudo cat > /etc/motd <<EOF
-======================================
-    You have set the IP correctly!
-    now, type sudo./SetupVeeamVM.sh
-======================================
-EOF
 echo "Creating a backup of the current profile ..."
 # Creates a backup
 cp /etc/netplan/00-installer-config.yaml /etc/netplan/00-installer-config.yaml.bk_`date +%Y%m%d%H%M`
@@ -15,9 +8,10 @@ rm /etc/netplan/00-installer-config.yaml
 echo "Disabling DHCP"
 sed -i "s/dhcp4: yes/dhcp4: no/g" /etc/netplan/00-installer-config.yaml
 # Retrieves the NIC information
+echo "."
 echo "Listing current IPs, take note of the interface for the NIC (should be eth0) ..."
 ip address
-echo
+echo "."
 nic=`ip address | awk 'NR==7{print $2}'`
 echo "Working with" $nic
 # Ask for input on network configuration
