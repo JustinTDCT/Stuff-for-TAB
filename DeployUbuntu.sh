@@ -1,5 +1,5 @@
 #!/bin/bash
-# version 1.10.02
+# version 1.10.05
 # make TAB's folder
 mkdir /etc/tab
 # create LT bounce script
@@ -11,7 +11,7 @@ chmod +xX /bin/bouncescreencon.sh
 # install webmin
 rm -f /usr/share/keyrings/webmin.gpg
 curl -fsSL https://download.webmin.com/jcameron-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/webmin.gpg
-repos=$(tail  /etc/apt/sources.list | grep -m 1 "sarge")
+repos=$(tail  /etc/apt/sources.list | grep -m 1 "webmin")
 if [[ "$repos" != "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://download.webmin.com/download/repository sarge contrib" ]]; then
   echo "Adding WebMin to sources"
   echo "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://download.webmin.com/download/repository sarge contrib" >> /etc/apt/sources.list
