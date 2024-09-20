@@ -1,4 +1,5 @@
 #!/bin/bash
+# version 1.10.02
 # make TAB's folder
 mkdir /etc/tab
 # create LT bounce script
