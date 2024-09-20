@@ -34,3 +34,4 @@ echo "- access WebMin console: https://your_server_ip:10000" >> /etc/motd
 echo "." >> /etc/motd
 echo "." >> /etc/motd
 echo "." >> /etc/motd
+tail /etc/motd
