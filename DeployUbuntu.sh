@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "TAB Ubuntu deployment script version 1.10.09"
+echo "TAB Ubuntu deployment script version 1.10.10"
 # make TAB's folder
 echo "- Creating tab folder in /etc"
 mkdir /etc/tab
@@ -22,7 +22,7 @@ fi
 wget -O /etc/tab/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/DeployUbuntu.sh 2> /dev/null
 chmod +xX /etc/tab/DeployUbuntu.sh
 apt update
-apt install webmin
+apt install webmin htop unzip bmon default-jre -y
 # make motd
 echo "- Updating /etc/motd"
 echo "TAB Computer Systems Ubunu Server" > /etc/motd
