@@ -50,5 +50,5 @@ echo "IPSET" > /home/tabadmin/stateipset.txt
 rm /home/tabadmin/statenew.txt
 # output the IP
 ip address
-# read the motd message
-cat /etc/motd
+echo "."
+echo "If you were consoled in (not SSH) and you stayed connected you should run the Veeam VM setup manually: sudo ./SetupVeeamVM.sh"
