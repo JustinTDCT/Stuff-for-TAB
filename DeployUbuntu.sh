@@ -12,8 +12,8 @@ chmod +xX /bin/bouncescreencon.sh
 rm -f /usr/share/keyrings/webmin.gpg
 curl -fsSL https://download.webmin.com/jcameron-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/webmin.gpg
 repos=$(tail  /etc/apt/sources.list | grep -m 1 "sarge")
+if [[ "$repos" != "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://download.webmin.com/download/repository sarge contrib" ]]
 
-deb [signed-by=/usr/share/keyrings/webmin.gpg] http://download.webmin.com/download/repository sarge contrib
 echo "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://download.webmin.com/download/repository sarge contrib" >> /etc/apt/sources.list
 apt update
 apt install webmin
