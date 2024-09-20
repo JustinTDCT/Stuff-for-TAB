@@ -1,5 +1,5 @@
 #!/bin/bash
-# version 1.10.03
+# version 1.10.04
 echo "Removing scripts and downloading fresh copies ..."
 # remove existing files
 rm /home/tabadmin/SetupVeeamVM.sh
@@ -34,3 +34,5 @@ if [ -f /home/tabadmin/stateveeamdone.txt ]; then
     echo "Veeam should be already setup, exiting ..."
     exit
 fi
+echo "."
+tail /etc/motd
