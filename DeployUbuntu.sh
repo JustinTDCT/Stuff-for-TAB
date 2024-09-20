@@ -1,5 +1,5 @@
 #!/bin/bash
-# version 1.10.05
+# version 1.10.06
 # make TAB's folder
 mkdir /etc/tab
 # create LT bounce script
@@ -16,6 +16,8 @@ if [[ "$repos" != "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://downloa
   echo "Adding WebMin to sources"
   echo "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://download.webmin.com/download/repository sarge contrib" >> /etc/apt/sources.list
 fi
+wget -O /etc/tab/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/DeployUbuntu.sh 2> /dev/null
+chmod +xX /etc/tab/DeployUbuntu.sh
 apt update
 apt install webmin
 # make motd
