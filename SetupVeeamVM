@@ -1,4 +1,5 @@
 #!/bin/bash  
+# version 1.10.02
 # Set variable defaults
 vupw="NOT SET"
 tapw="NOT SET"
