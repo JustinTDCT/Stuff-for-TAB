@@ -1,5 +1,5 @@
 #!/bin/bash
-#
+# version 1.10.02
 echo "Creating a backup of the current profile ..."
 # Creates a backup
 cp /etc/netplan/00-installer-config.yaml /etc/netplan/00-installer-config.yaml.bk_`date +%Y%m%d%H%M`
