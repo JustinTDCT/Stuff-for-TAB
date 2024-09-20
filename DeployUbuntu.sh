@@ -1,14 +1,17 @@
 #!/bin/bash
-echo "version 1.10.08"
+echo "TAB Ubuntu deployment script version 1.10.09"
 # make TAB's folder
+echo "- Creating tab folder in /etc"
 mkdir /etc/tab
 # create LT bounce script
+echo "- Creating LT / ScreenConnect bounce scripts"
 echo "pkill -9 ltechagent;\ sudo /etc/init.d/ltechagent start" > /bin/bouncelt.sh
 chmod +xX /bin/bouncelt.sh
 # create screenconnect bounce script
 echo "/etc/init.d/connectwisecontrol-24a22b9fc261d141 stop;\ /etc/init.d/connectwisecontrol-24a22b9fc261d141 start" > /bin/bouncescreencon.sh
 chmod +xX /bin/bouncescreencon.sh
 # install webmin
+echo "- Installing WebMin"
 rm -f /usr/share/keyrings/webmin.gpg
 curl -fsSL https://download.webmin.com/jcameron-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/webmin.gpg
 repos=$(tail  /etc/apt/sources.list | grep -m 1 "webmin")
@@ -21,6 +24,7 @@ chmod +xX /etc/tab/DeployUbuntu.sh
 apt update
 apt install webmin
 # make motd
+echo "- Updating /etc/motd"
 echo "TAB Computer Systems Ubunu Server" > /etc/motd
 echo "====================================" >> /etc/motd
 echo "- restart LabTech: sudo bouncelt.sh -or- sudo pkill -9 ltechagent; sudo /etc/init.d/ltechagent start" >> /etc/motd
