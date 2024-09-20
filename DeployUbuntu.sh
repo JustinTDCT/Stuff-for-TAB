@@ -9,6 +9,7 @@ chmod +xX /bin/bouncelt.sh
 echo “/etc/init.d/connectwisecontrol-24a22b9fc261d141 stop; /etc/init.d/connectwisecontrol-24a22b9fc261d141 start” > /bin/bouncescreencon.sh
 chmod +xX /bin/bouncescreencon.sh
 # install webmin
+rm -f /usr/share/keyrings/webmin.gpg
 curl -fsSL https://download.webmin.com/jcameron-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/webmin.gpg
 echo "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://download.webmin.com/download/repository sarge contrib" >> /etc/apt/sources.list
 apt update
