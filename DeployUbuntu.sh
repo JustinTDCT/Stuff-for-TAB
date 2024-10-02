@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "TAB Ubuntu deployment script version 1.10.12"
+echo "TAB Ubuntu deployment script version 1.10.13"
 # make TAB's folder
 echo "- Creating tab folder in /etc"
 mkdir /etc/tab
@@ -12,6 +12,16 @@ chmod +xX /bin/bouncelt.sh
 echo "/etc/init.d/connectwisecontrol-24a22b9fc261d141 stop" > /bin/bouncescreencon.sh
 echo "/etc/init.d/connectwisecontrol-24a22b9fc261d141 start" >> /bin/bouncescreencon.sh
 chmod +xX /bin/bouncescreencon.sh
+# add nightly LT bounce
+echo "- Adding CRONTAB job for ROOT to bounce LT nightly"
+lastline=$(tail /etc/crontab | grep -m 1 "bounce")
+if [[ "$lastline" != *"bouncelt.sh"* ]]; then
+  echo "30 2 * * * root /bin/bouncelt.sh" >> /etc/crontab
+else
+  echo "- CRONTAB exists, skipping"
+fi
+#get IP of server
+ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 # install webmin
 echo "- Installing WebMin"
 rm -f /usr/share/keyrings/webmin.gpg
@@ -20,6 +30,8 @@ repos=$(tail  /etc/apt/sources.list | grep -m 1 "webmin")
 if [[ "$repos" != "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://download.webmin.com/download/repository sarge contrib" ]]; then
   echo "Adding WebMin to sources"
   echo "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://download.webmin.com/download/repository sarge contrib" >> /etc/apt/sources.list
+else
+  echo "Repo already added, skipping"
 fi
 wget -O /etc/tab/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/DeployUbuntu.sh 2> /dev/null
 chmod +xX /etc/tab/DeployUbuntu.sh
@@ -30,9 +42,9 @@ echo "- Updating /etc/motd"
 echo "TAB Computer Systems Ubunu Server" > /etc/motd
 echo "====================================" >> /etc/motd
 echo "- restart LabTech: sudo bouncelt.sh -or- sudo pkill -9 ltechagent; sudo /etc/init.d/ltechagent start" >> /etc/motd
-echo "- restart Screen Connect: sudo /etc/init.d/connectwisecontrol-24a22b9fc261d141 stop; sudo /etc/init.d/connectwisecontrol-24a22b9fc261d141 start" >> /etc/motd
+echo "- restart Screen Connect: sudo bouncescreencon.sh -or- /etc/init.d/connectwisecontrol-24a22b9fc261d141 stop; sudo /etc/init.d/connectwisecontrol-24a22b9fc261d141 start" >> /etc/motd
 echo "- restart the server: sudo shutdown -r now" >> /etc/motd
-echo "- access WebMin console: https://your_server_ip:10000" >> /etc/motd
+echo "- access WebMin console: https://$ip:10000" >> /etc/motd
 echo "." >> /etc/motd
 echo "." >> /etc/motd
 echo "." >> /etc/motd
