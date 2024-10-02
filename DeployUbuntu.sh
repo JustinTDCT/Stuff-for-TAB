@@ -5,7 +5,7 @@ echo "- Creating tab folder in /etc"
 mkdir /etc/tab
 # create LT bounce script
 echo "- Creating LT / ScreenConnect bounce scripts"
-echo "pkill -9 ltechagent;\" > /bin/bouncelt.sh
+echo "pkill -9 ltechagent" > /bin/bouncelt.sh
 echo "/etc/init.d/ltechagent start" >> /bin/bouncelt.sh
 chmod +xX /bin/bouncelt.sh
 # create screenconnect bounce script
