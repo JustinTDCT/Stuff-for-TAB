@@ -20,8 +20,6 @@ if [[ "$lastline" != *"bouncelt.sh"* ]]; then
 else
   echo "- CRONTAB exists, skipping"
 fi
-# ensure all our stuff is added
-apt install -y bmon default-jre unzip 
 # get IP of server
 ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 # install webmin
