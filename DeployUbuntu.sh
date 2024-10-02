@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "TAB Ubuntu deployment script version 1.10.10"
+echo "TAB Ubuntu deployment script version 1.10.11"
 # make TAB's folder
 echo "- Creating tab folder in /etc"
 mkdir /etc/tab
