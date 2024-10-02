@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "TAB Ubuntu deployment script version 1.10.14"
+echo "TAB Ubuntu deployment script version 1.10.15"
 # make TAB's folder
 echo "- Creating tab folder in /etc"
 mkdir /etc/tab
@@ -20,7 +20,9 @@ if [[ "$lastline" != *"bouncelt.sh"* ]]; then
 else
   echo "- CRONTAB exists, skipping"
 fi
-#get IP of server
+# ensure all our stuff is added
+apt install -y bmon default-jre unzip 
+# get IP of server
 ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 # install webmin
 echo "- Installing WebMin"
@@ -45,9 +47,13 @@ echo "- restart LabTech: sudo bouncelt.sh -or- sudo pkill -9 ltechagent; sudo /e
 echo "- restart Screen Connect: sudo bouncescreencon.sh -or- /etc/init.d/connectwisecontrol-24a22b9fc261d141 stop; sudo /etc/init.d/connectwisecontrol-24a22b9fc261d141 start" >> /etc/motd
 echo "- restart the server: sudo shutdown -r now" >> /etc/motd
 echo "- access WebMin console: https://$ip:10000" >> /etc/motd
-echo "-------------- VEEAM XFS SERVERS --------------"
-echo "- Expand LUN (assuming you expanded on NAS and rebooted VM): sudo xfs_growfs /dev/sdb"
-
+echo "- reset tabadmin password: passwd" >> /etc/motd
+echo "-------------- VEEAM XFS SERVERS --------------" >> /etc/motd
+echo "- expand LUN (assuming you expanded on NAS and rebooted VM): sudo xfs_growfs /dev/sdb" >> /etc/motd
+echo "- check LUN space: df -H | grep /dev/sdb" >> /etc/motd
+echo "- reset veeamuser password: sudo passwd veeamuser" >> /etc/motd
+echo "- manually trim filesystem: sudo fstrim /mnt/veeamrepo" >> /etc/motd
+echo "- fix LUN filesystem errors: sudo umount /dev/sdb; sudo xfs_repair /dev/sdb; sudo mount -a" >> /etc/motd
 echo "." >> /etc/motd
 echo "." >> /etc/motd
 echo "." >> /etc/motd
