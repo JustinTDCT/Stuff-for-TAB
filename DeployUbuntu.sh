@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "TAB Ubuntu deployment script version 1.10.13"
+echo "TAB Ubuntu deployment script version 1.10.14"
 # make TAB's folder
 echo "- Creating tab folder in /etc"
 mkdir /etc/tab
@@ -45,6 +45,9 @@ echo "- restart LabTech: sudo bouncelt.sh -or- sudo pkill -9 ltechagent; sudo /e
 echo "- restart Screen Connect: sudo bouncescreencon.sh -or- /etc/init.d/connectwisecontrol-24a22b9fc261d141 stop; sudo /etc/init.d/connectwisecontrol-24a22b9fc261d141 start" >> /etc/motd
 echo "- restart the server: sudo shutdown -r now" >> /etc/motd
 echo "- access WebMin console: https://$ip:10000" >> /etc/motd
+echo "-------------- VEEAM XFS SERVERS --------------"
+echo "- Expand LUN (assuming you expanded on NAS and rebooted VM): sudo xfs_growfs /dev/sdb"
+
 echo "." >> /etc/motd
 echo "." >> /etc/motd
 echo "." >> /etc/motd
