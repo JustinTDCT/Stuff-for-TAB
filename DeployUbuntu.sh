@@ -35,7 +35,7 @@ wget -O /etc/tab_scripts/loginscript.sh https://raw.githubusercontent.com/Justin
 echo "- /etc/tab_scripts/DeployUbuntu.sh"
 wget -O /etc/tab_scripts/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/DeployUbuntu.sh 2> /dev/null
 echo "- /etc/tab_scripts/disable-phased-update.sh"
-wget -O /etc/tab_scripts/disable-phased-update.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/disable-phased-update.sh 2> /dev/null
+wget -O /etc/tab_scripts/disable-phased-update.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/disable-phased-update.sh 2> /dev/null
 echo "- /bin/bouncelt.sh"
 wget -O /bin/bouncelt.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/bouncelt.sh 2> /dev/null
 echo "- /bin/bouncesc.sh"
