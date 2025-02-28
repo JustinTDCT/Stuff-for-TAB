@@ -60,10 +60,11 @@ service ltechagent status >> /var/log/nightlyactions.log
 echo "Update OS ..." >> /var/log/nightlyactions.log
 apt update
 apt upgrade -y
+apt autoremove
 # check for reboot pending by file
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "Rebooting if needed ..." >> /var/log/nightlyactions.log
-if test -f "/var/run/reboot-required"; then 
+if [ -e /var/run/reboot-required ]; then 
   echo "- Reboot required!" >> /var/log/nightlyactions.log
   shutdown -r now
 fi
