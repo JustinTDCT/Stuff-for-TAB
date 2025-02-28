@@ -13,6 +13,7 @@ fi
 echo "Removing all old files as this script replaces and updates them ..."
 rm -r /etc/tab  2> /dev/null
 rm -r /etc/tab_scripts 2> /dev/null
+rm -r /tab_temp
 rm /home/tabadmin/SetupVeeamVM.sh 2> /dev/null
 rm /home/tabadmin/SetIP.sh 2> /dev/null
 rm /home/tabadmin/loginscript.sh 2> /dev/null
@@ -74,7 +75,6 @@ else
   echo "Repo already added, skipping"
 fi
 wget -O /etc/tab/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/DeployUbuntu.sh 2> /dev/null
-chmod +xX /etc/tab/DeployUbuntu.sh
 apt update
 apt install webmin htop unzip bmon default-jre -y
 # make motd
