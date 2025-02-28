@@ -34,6 +34,7 @@ chmod +xX /bin/nightlyactions.sh
 pkill -9 ltechagent
 # restart LT
 /etc/init.d/ltechagent start
+service ltechagent start
 # update the OS
 apt update
 apt upgrade -y
