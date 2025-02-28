@@ -1,5 +1,5 @@
 #!/bin/bash
-echo $date >> /var/log/nightlyactions.log
+echo "$(date + "%Y-%d-%m")" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
 # clear out old files
 echo "Removing old files ..." >> /var/log/nightlyactions.log
@@ -56,7 +56,6 @@ echo "Update OS ..." >> /var/log/nightlyactions.log
 apt update
 apt upgrade -y
 # check for reboot pending by file
-echo $date >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "Rebooting if needed ..." >> /var/log/nightlyactions.log
 if [ -f var/run/reboot-required ]; then 
