@@ -74,7 +74,6 @@ if [[ "$repos" != "deb [signed-by=/usr/share/keyrings/webmin.gpg] http://downloa
 else
   echo "Repo already added, skipping"
 fi
-wget -O /etc/tab/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/DeployUbuntu.sh 2> /dev/null
 apt update
 apt install webmin htop unzip bmon default-jre -y
 # make motd
