@@ -1,29 +1,69 @@
 #!/bin/bash
-echo "TAB Ubuntu deployment script version 1.10.15"
-# make TAB's folder
-echo "- Creating tab folder in /etc"
-mkdir /etc/tab
-# create LT bounce script
-echo "- Creating LT / ScreenConnect bounce scripts"
-echo "pkill -9 ltechagent" > /bin/bouncelt.sh
-echo "/etc/init.d/ltechagent start" >> /bin/bouncelt.sh
-chmod +xX /bin/bouncelt.sh
-# create screenconnect bounce script
-echo "/etc/init.d/connectwisecontrol-24a22b9fc261d141 stop" > /bin/bouncescreencon.sh
-echo "/etc/init.d/connectwisecontrol-24a22b9fc261d141 start" >> /bin/bouncescreencon.sh
-chmod +xX /bin/bouncescreencon.sh
-# add nightly LT bounce
-echo "- Adding CRONTAB job for ROOT to bounce LT nightly"
-lastline=$(tail /etc/crontab | grep -m 1 "bounce")
-if [[ "$lastline" != *"bouncelt.sh"* ]]; then
-  echo "30 2 * * * root /bin/bouncelt.sh" >> /etc/crontab
+# version 2.00.00
+
+# check the userID variable, if you are not 0 you are not SUDO
+echo "Checking to see if you are running under SUDO ..."
+if [ $(id -u) -ne 0 ]; then 
+  echo "- please run this as SUDO!"
+  exit
 else
-  echo "- CRONTAB exists, skipping"
+  echo "- user is SUDO"
 fi
+# == old file handling
+echo "Removing all old files as this script replaces and updates them ..."
+rm -r /etc/tab  2> /dev/null
+rm -r /etc/tab_scripts 2> /dev/null
+rm /home/tabadmin/SetupVeeamVM.sh 2> /dev/null
+rm /home/tabadmin/SetIP.sh 2> /dev/null
+rm /home/tabadmin/loginscript.sh 2> /dev/null
+rm /bin/bouncelt.sh 2> /dev/null
+rm /bin/bouncesc.sh 2> /dev/null
+rm /bin/bouncescreencon.sh 2> /dev/null 
+rm /bin/nightlyactions.sh 2> /dev/null
+mkdir /etc/tab_scripts
+mkdir /tab_temp
+chmod +777 /tab_temp
+# == grabbing new files (8 files)
+echo "Grabbing updated files ..."
+echo "- /etc/tab_scripts/SetupVeeam.sh"
+wget -O /etc/tab_scripts/SetupVeeamVM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/SetupVeeamVM 2> /dev/null
+echo "- /etc/tab_scripts/SetIP.sh"
+wget -O /etc/tab_scripts/SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/setip 2> /dev/null
+echo "- /etc/tab_scripts/loginscript.sh"
+wget -O /etc/tab_scripts/loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/loginscript 2> /dev/null
+echo "- /etc/tab_scripts/DeployUbuntu.sh"
+wget -O /etc/tab_scripts/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/DeployUbuntu.sh 2> /dev/null
+echo "- /etc/tab_scripts/disable-phased-update.sh"
+wget -O /etc/tab_scripts/disable-phased-update.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/disable-phased-update.sh 2> /dev/null
+echo "- /bin/bouncelt.sh"
+wget -O /bin/bouncelt.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/bouncelt.sh 2> /dev/null
+echo "- /bin/bouncesc.sh"
+wget -O /bin/bouncesc.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/bouncesc.sh 2> /dev/null
+echo "- /bin/nightlyactions.sh"
+wget -O /bin/nightlyactions.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/nightlyactions.sh 2> /dev/null
+# make the files executable (8 files)
+chmod +xX /etc/tab_scripts/SetupVeeamVM.sh
+chmod +xX /etc/tab_scripts/SetIP.sh
+chmod +xX /etc/tab_scripts/loginscript.sh
+chmod +xX /etc/tab_scripts/DeployUbuntu.sh
+chmod +xX /etc/tab_scripts/disable-phased-update.sh
+chmod +xX /bin/bouncelt.sh
+chmod +xX /bin/bouncesc.sh
+chmod +xX /bin/nightlyactions.sh
+# create the nightly cron job to update files and the server
+#echo "Adding CRONTAB job for ROOT to bounce LT nightly @ 8:00pm"
+#sed '22,$ d' /etc/crontab > /tab_temp/crontab2
+#mv /tab_temp/crontab2 /etc/crontab
+#echo "30 20 * * * root /bin/nightlyactions.sh" >> /etc/crontab
 # get IP of server
 ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
+echo "Disabling phased updates ..."
+sudo cat > /etc/apt/apt.conf.d/99-disable-phasing <<EOF
+Update-Manager::Always-Include-Phased-Updates true;
+APT::Get::Always-Include-Phased-Updates true;
+EOF
 # install webmin
-echo "- Installing WebMin"
+echo "Installing WebMin ..."
 rm -f /usr/share/keyrings/webmin.gpg
 curl -fsSL https://download.webmin.com/jcameron-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/webmin.gpg
 repos=$(tail  /etc/apt/sources.list | grep -m 1 "webmin")
@@ -38,11 +78,11 @@ chmod +xX /etc/tab/DeployUbuntu.sh
 apt update
 apt install webmin htop unzip bmon default-jre -y
 # make motd
-echo "- Updating /etc/motd"
+echo "Updating /etc/motd ..."
 echo "TAB Computer Systems Ubunu Server" > /etc/motd
 echo "====================================" >> /etc/motd
-echo "- restart LabTech: sudo bouncelt.sh -or- sudo pkill -9 ltechagent; sudo /etc/init.d/ltechagent start" >> /etc/motd
-echo "- restart Screen Connect: sudo bouncescreencon.sh -or- /etc/init.d/connectwisecontrol-24a22b9fc261d141 stop; sudo /etc/init.d/connectwisecontrol-24a22b9fc261d141 start" >> /etc/motd
+echo "- restart LabTech: sudo bouncelt.sh" >> /etc/motd
+echo "- restart Screen Connect: sudo bouncescreencon.sh" >> /etc/motd
 echo "- restart the server: sudo shutdown -r now" >> /etc/motd
 echo "- access WebMin console: https://$ip:10000" >> /etc/motd
 echo "- reset tabadmin password: passwd" >> /etc/motd
