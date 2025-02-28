@@ -27,13 +27,13 @@ chmod +777 /tab_temp
 # == grabbing new files (8 files)
 echo "Grabbing updated files ..."
 echo "- /etc/tab_scripts/SetupVeeam.sh"
-wget -O /etc/tab_scripts/SetupVeeamVM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/SetupVeeamVM 2> /dev/null
+wget -O /etc/tab_scripts/SetupVeeamVM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/SetupVeeamVM 2> /dev/null
 echo "- /etc/tab_scripts/SetIP.sh"
-wget -O /etc/tab_scripts/SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/setip 2> /dev/null
+wget -O /etc/tab_scripts/SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/setip 2> /dev/null
 echo "- /etc/tab_scripts/loginscript.sh"
-wget -O /etc/tab_scripts/loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/loginscript 2> /dev/null
+wget -O /etc/tab_scripts/loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/loginscript 2> /dev/null
 echo "- /etc/tab_scripts/DeployUbuntu.sh"
-wget -O /etc/tab_scripts/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/DeployUbuntu.sh 2> /dev/null
+wget -O /etc/tab_scripts/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/DeployUbuntu.sh 2> /dev/null
 echo "- /etc/tab_scripts/disable-phased-update.sh"
 wget -O /etc/tab_scripts/disable-phased-update.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/disable-phased-update.sh 2> /dev/null
 echo "- /bin/bouncelt.sh"
