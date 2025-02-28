@@ -1,4 +1,7 @@
 #!/bin/bash
+echo "=============================================================" >> /var/log/nightlyactions.log
+echo "=============================================================" >> /var/log/nightlyactions.log
+echo "=============================================================" >> /var/log/nightlyactions.log
 echo "$(date)" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
 # clear out old files
