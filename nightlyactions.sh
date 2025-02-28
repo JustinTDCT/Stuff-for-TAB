@@ -16,9 +16,9 @@ rm /bin/bouncesc.sh 2> /dev/null
 rm /bin/bouncescreencon.sh 2> /dev/null 
 rm /bin/nightlyactions.sh 2> /dev/null
 # make the tab folder
-if [ ! -d "/etc/tab_scripts/" ]; then
-  mkdir /etc/tab_scripts
-fi
+mkdir /etc/tab_scripts
+mkdir /tab_temp
+chmod +777 /tab_temp
 # grab new files
 echo "Grab new files ..." >> /var/log/nightlyactions.log
 wget -O /etc/tab_scripts/SetupVeeamVM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/SetupVeeamVM 2> /dev/null
