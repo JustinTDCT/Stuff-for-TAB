@@ -1,5 +1,7 @@
 #!/bin/bash
+echo date >> /var/log/nightlyactions.log
 # clear out old files
+echo "Removing old files ..." >> /var/log/nightlyactions.log
 rm -r /etc/tab  2> /dev/null
 rm -r /etc/tab_scripts 2> /dev/null
 rm /home/tabadmin/SetupVeeamVM.sh 2> /dev/null
@@ -13,6 +15,7 @@ if [ ! -d "/etc/tab_scripts/" ]; then
   mkdir /etc/tab_scripts
 fi
 # grab new files
+echo "Grab new files ..." >> /var/log/nightlyactions.log
 wget -O /etc/tab_scripts/SetupVeeamVM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/SetupVeeamVM 2> /dev/null
 wget -O /etc/tab_scripts/SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/setip 2> /dev/null
 wget -O /etc/tab_scripts/loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/loginscript 2> /dev/null
@@ -31,14 +34,22 @@ chmod +xX /bin/bouncelt.sh
 chmod +xX /bin/bouncesc.sh
 chmod +xX /bin/nightlyactions.sh
 # kill LT
+echo "Restart LT (Check, kill, re-check) ..." >> /var/log/nightlyactions.log
+service ltechagent status >> /var/log/nightlyactions.log
 pkill -9 ltechagent
+service ltechagent status >> /var/log/nightlyactions.log
 # restart LT
 /etc/init.d/ltechagent start
 service ltechagent start
+service ltechagent status >> /var/log/nightlyactions.log
 # update the OS
+echo "Update OS ..." >> /var/log/nightlyactions.log
 apt update
 apt upgrade -y
 # check for reboot pending by file
+echo date >> /var/log/nightlyactions.log
+echo "Rebooting if needed ..." >> /var/log/nightlyactions.log
 if [ -f var/run/reboot-required ]; then 
+  echo "- Reboot required!" >> /var/log/nightlyactions.log
   shutdown -r now
 fi
