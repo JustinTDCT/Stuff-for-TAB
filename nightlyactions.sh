@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version 1.00.12
+# Version 1.00.14
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
@@ -60,7 +60,7 @@ service ltechagent status >> /var/log/nightlyactions.log
 echo "Update OS ..." >> /var/log/nightlyactions.log
 apt update
 apt upgrade -y
-apt autoremove
+apt autoremove -y
 # check for reboot pending by file
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "Rebooting if needed ..." >> /var/log/nightlyactions.log
