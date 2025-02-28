@@ -18,14 +18,14 @@ if [ ! -d "/etc/tab_scripts/" ]; then
 fi
 # grab new files
 echo "Grab new files ..." >> /var/log/nightlyactions.log
-wget -O /etc/tab_scripts/SetupVeeamVM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/SetupVeeamVM 2> /dev/null
-wget -O /etc/tab_scripts/SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/setip 2> /dev/null
-wget -O /etc/tab_scripts/loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/loginscript 2> /dev/null
-wget -O /etc/tab_scripts/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/DeployUbuntu.sh 2> /dev/null
-wget -O /etc/tab_scripts/disable-phased-update.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/disable-phased-update.sh 2> /dev/null
-wget -O /bin/bouncelt.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/bouncelt.sh 2> /dev/null
-wget -O /bin/bouncesc.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/bouncesc.sh 2> /dev/null
-wget -O /bin/nightlyactions.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/main/nightlyactions.sh 2> /dev/null
+wget -O /etc/tab_scripts/SetupVeeamVM.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/SetupVeeamVM 2> /dev/null
+wget -O /etc/tab_scripts/SetIP.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/setip 2> /dev/null
+wget -O /etc/tab_scripts/loginscript.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/loginscript 2> /dev/null
+wget -O /etc/tab_scripts/DeployUbuntu.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/DeployUbuntu.sh 2> /dev/null
+wget -O /etc/tab_scripts/disable-phased-update.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/ref/heads/main/disable-phased-update.sh 2> /dev/null
+wget -O /bin/bouncelt.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/bouncelt.sh 2> /dev/null
+wget -O /bin/bouncesc.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/bouncesc.sh 2> /dev/null
+wget -O /bin/nightlyactions.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/nightlyactions.sh 2> /dev/null
 # make them executable
 chmod +xX /etc/tab_scripts/SetupVeeamVM.sh
 chmod +xX /etc/tab_scripts/SetIP.sh
