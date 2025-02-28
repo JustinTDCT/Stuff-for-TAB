@@ -11,6 +11,7 @@ rm /home/tabadmin/loginscript.sh 2> /dev/null
 rm /bin/bouncelt.sh 2> /dev/null
 rm /bin/bouncesc.sh 2> /dev/null
 rm /bin/bouncescreencon.sh 2> /dev/null 
+rm /bin/nightlyactions.sh 2> /dev/null
 # make the tab folder
 if [ ! -d "/etc/tab_scripts/" ]; then
   mkdir /etc/tab_scripts
