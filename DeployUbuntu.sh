@@ -1,5 +1,5 @@
 #!/bin/bash
-# version 2.00.00
+# version 2.00.01
 
 # check the userID variable, if you are not 0 you are not SUDO
 echo "Checking to see if you are running under SUDO ..."
@@ -52,10 +52,10 @@ chmod +xX /bin/bouncelt.sh
 chmod +xX /bin/bouncesc.sh
 chmod +xX /bin/nightlyactions.sh
 # create the nightly cron job to update files and the server
-#echo "Adding CRONTAB job for ROOT to bounce LT nightly @ 8:00pm"
-#sed '22,$ d' /etc/crontab > /tab_temp/crontab2
-#mv /tab_temp/crontab2 /etc/crontab
-#echo "30 20 * * * root /bin/nightlyactions.sh" >> /etc/crontab
+echo "Adding CRONTAB job for ROOT to bounce LT nightly @ 8:00pm"
+sed '22,$ d' /etc/crontab > /tab_temp/crontab2
+mv /tab_temp/crontab2 /etc/crontab
+echo "30 20 * * * root /bin/nightlyactions.sh" >> /etc/crontab
 # get IP of server
 ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 echo "Disabling phased updates ..."
