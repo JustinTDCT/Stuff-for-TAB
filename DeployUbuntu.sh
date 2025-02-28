@@ -95,4 +95,4 @@ echo "- fix LUN filesystem errors: sudo umount /dev/sdb; sudo xfs_repair /dev/sd
 echo "." >> /etc/motd
 echo "." >> /etc/motd
 echo "." >> /etc/motd
-tail /etc/motd
+cat /etc/motd
