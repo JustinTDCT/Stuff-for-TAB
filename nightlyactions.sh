@@ -1,4 +1,5 @@
 #!/bin/bash
+# Version 1.00.12
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
@@ -62,7 +63,7 @@ apt upgrade -y
 # check for reboot pending by file
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "Rebooting if needed ..." >> /var/log/nightlyactions.log
-if [ -f var/run/reboot-required ]; then 
+if test -f "/var/run/reboot-required"; then 
   echo "- Reboot required!" >> /var/log/nightlyactions.log
   shutdown -r now
 fi
