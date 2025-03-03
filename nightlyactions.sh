@@ -56,6 +56,8 @@ service ltechagent status >> /var/log/nightlyactions.log
 /etc/init.d/ltechagent start
 service ltechagent start
 service ltechagent status >> /var/log/nightlyactions.log
+# get IP of server
+ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 # make motd
 echo "Updating /etc/motd ..."
 echo "TAB Computer Systems Ubunu Server" > /etc/motd
