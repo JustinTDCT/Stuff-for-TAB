@@ -56,6 +56,24 @@ service ltechagent status >> /var/log/nightlyactions.log
 /etc/init.d/ltechagent start
 service ltechagent start
 service ltechagent status >> /var/log/nightlyactions.log
+# make motd
+echo "Updating /etc/motd ..."
+echo "TAB Computer Systems Ubunu Server" > /etc/motd
+echo "====================================" >> /etc/motd
+echo "- restart LabTech: sudo bouncelt.sh" >> /etc/motd
+echo "- restart Screen Connect: sudo bouncescreencon.sh" >> /etc/motd
+echo "- restart the server: sudo shutdown -r now" >> /etc/motd
+echo "- access WebMin console: https://$ip:10000" >> /etc/motd
+echo "- reset tabadmin password: passwd" >> /etc/motd
+echo "-------------- VEEAM XFS SERVERS --------------" >> /etc/motd
+echo "- expand LUN (assuming you expanded on NAS and rebooted VM): sudo xfs_growfs /dev/sdb" >> /etc/motd
+echo "- check LUN space: df -H | grep /dev/sdb" >> /etc/motd
+echo "- reset veeamuser password: sudo passwd veeamuser" >> /etc/motd
+echo "- manually trim filesystem: sudo fstrim /mnt/veeamrepo" >> /etc/motd
+echo "- fix LUN filesystem errors: sudo umount /dev/sdb; sudo xfs_repair /dev/sdb; sudo mount -a" >> /etc/motd
+echo "." >> /etc/motd
+echo "." >> /etc/motd
+echo "." >> /etc/motd
 # update the OS
 echo "Update OS ..." >> /var/log/nightlyactions.log
 apt update
