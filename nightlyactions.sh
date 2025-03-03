@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version 1.00.14
+# Version 1.00.16
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
@@ -63,7 +63,7 @@ echo "Updating /etc/motd ..."
 echo "TAB Computer Systems Ubunu Server" > /etc/motd
 echo "====================================" >> /etc/motd
 echo "- restart LabTech: sudo bouncelt.sh" >> /etc/motd
-echo "- restart Screen Connect: sudo bouncescreencon.sh" >> /etc/motd
+echo "- restart Screen Connect: sudo bouncesc.sh" >> /etc/motd
 echo "- restart the server: sudo shutdown -r now" >> /etc/motd
 echo "- access WebMin console: https://$ip:10000" >> /etc/motd
 echo "- reset tabadmin password: passwd" >> /etc/motd
