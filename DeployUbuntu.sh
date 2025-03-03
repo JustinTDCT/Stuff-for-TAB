@@ -1,5 +1,5 @@
 #!/bin/bash
-# version 2.00.01
+# version 2.00.02
 
 # check the userID variable, if you are not 0 you are not SUDO
 echo "Checking to see if you are running under SUDO ..."
@@ -81,7 +81,7 @@ echo "Updating /etc/motd ..."
 echo "TAB Computer Systems Ubunu Server" > /etc/motd
 echo "====================================" >> /etc/motd
 echo "- restart LabTech: sudo bouncelt.sh" >> /etc/motd
-echo "- restart Screen Connect: sudo bouncescreencon.sh" >> /etc/motd
+echo "- restart Screen Connect: sudo bouncesc.sh" >> /etc/motd
 echo "- restart the server: sudo shutdown -r now" >> /etc/motd
 echo "- access WebMin console: https://$ip:10000" >> /etc/motd
 echo "- reset tabadmin password: passwd" >> /etc/motd
