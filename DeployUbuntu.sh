@@ -78,7 +78,7 @@ apt update
 apt install webmin htop unzip bmon default-jre -y
 # make motd
 echo "Updating /etc/motd ..."
-echo "TAB Computer Systems Ubunu Server" > /etc/motd
+echo "TAB Computer Systems Ubunu Server - Scripted v1.00.17" > /etc/motd
 echo "====================================" >> /etc/motd
 echo "- restart LabTech: sudo bouncelt.sh" >> /etc/motd
 echo "- restart Screen Connect: sudo bouncesc.sh" >> /etc/motd
