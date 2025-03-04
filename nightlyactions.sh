@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version 1.00.16
+# Version 1.00.17
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
@@ -60,7 +60,7 @@ service ltechagent status >> /var/log/nightlyactions.log
 ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 # make motd
 echo "Updating /etc/motd ..."
-echo "TAB Computer Systems Ubunu Server" > /etc/motd
+echo "TAB Computer Systems Ubunu Server - Scripted v1.00.17" > /etc/motd
 echo "====================================" >> /etc/motd
 echo "- restart LabTech: sudo bouncelt.sh" >> /etc/motd
 echo "- restart Screen Connect: sudo bouncesc.sh" >> /etc/motd
