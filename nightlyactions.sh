@@ -61,7 +61,7 @@ service ltechagent status >> /var/log/nightlyactions.log
 ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 # make motd
 echo "Updating /etc/motd ..."
-echo "TAB Computer Systems Ubunu Server - Scripted v1.00.20 - $(date)" > /etc/motd
+echo "TAB Computer Systems Ubunu Server - Scripted v1.00.22 - $(date)" > /etc/motd
 echo "====================================" >> /etc/motd
 echo "- restart LabTech: sudo bouncelt.sh" >> /etc/motd
 echo "- restart Screen Connect: sudo bouncesc.sh" >> /etc/motd
