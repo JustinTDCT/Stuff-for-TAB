@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version 1.00.20
+# Version 1.00.22
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
@@ -18,7 +18,7 @@ rm /bin/bouncescreencon.sh 2> /dev/null
 rm /bin/nightlyactions.sh 2> /dev/null
 # make the tab folder
 mkdir /etc/tab_scripts
-echo "1.00.20" >> /etc/tab_scripts/ver.txt
+echo "1.00.22" >> /etc/tab_scripts/ver.txt
 mkdir /tab_temp
 chmod +777 /tab_temp
 # grab new files
@@ -61,7 +61,7 @@ service ltechagent status >> /var/log/nightlyactions.log
 ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 # make motd
 echo "Updating /etc/motd ..."
-echo "TAB Computer Systems Ubunu Server - Scripted v1.00.20" - $(date)" > /etc/motd
+echo "TAB Computer Systems Ubunu Server - Scripted v1.00.20 - $(date)" > /etc/motd
 echo "====================================" >> /etc/motd
 echo "- restart LabTech: sudo bouncelt.sh" >> /etc/motd
 echo "- restart Screen Connect: sudo bouncesc.sh" >> /etc/motd
