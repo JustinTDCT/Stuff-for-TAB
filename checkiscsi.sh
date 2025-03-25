@@ -1,5 +1,10 @@
 #!/bin/bash  
-# version 1.00.3
+# version 1.01.0
+if [[ "$HOSTNAME" == *"veeam"* ]]; then
+  echo "Veeam server moving ahead."
+else
+  exit
+fi
 if [ -d /mnt/veeamrepo/backups/ ]; then
   echo "iSCSI OK"
   if [ -f /etc/tab_scripts/iscsi.fail ]; then
