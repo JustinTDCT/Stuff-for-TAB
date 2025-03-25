@@ -18,7 +18,7 @@ rm /bin/bouncescreencon.sh 2> /dev/null
 rm /bin/nightlyactions.sh 2> /dev/null
 # make the tab folder
 mkdir /etc/tab_scripts
-echo "1.00.22" >> /etc/tab_scripts/ver.txt
+echo "1.01.00" >> /etc/tab_scripts/ver.txt
 mkdir /tab_temp
 chmod +777 /tab_temp
 # grab new files
