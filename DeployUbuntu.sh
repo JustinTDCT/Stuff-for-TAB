@@ -1,5 +1,5 @@
 #!/bin/bash
-# version 2.00.03
+# version 2.01.00
 
 # check the userID variable, if you are not 0 you are not SUDO
 echo "Checking to see if you are running under SUDO ..."
@@ -42,6 +42,8 @@ echo "- /bin/bouncesc.sh"
 wget -O /bin/bouncesc.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/bouncesc.sh 2> /dev/null
 echo "- /bin/nightlyactions.sh"
 wget -O /bin/nightlyactions.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/nightlyactions.sh 2> /dev/null
+echo "- /etc/tab_scripts/checkiscsi.sh"
+wget -O /etc/tab_scripts/checkiscsi.sh https://raw.githubusercontent.com/JustinTDCT/Stuff-for-TAB/refs/heads/main/checkiscsi.sh 2> /dev/null
 # make the files executable (8 files)
 chmod +xX /etc/tab_scripts/SetupVeeamVM.sh
 chmod +xX /etc/tab_scripts/SetIP.sh
@@ -51,12 +53,14 @@ chmod +xX /etc/tab_scripts/disable-phased-update.sh
 chmod +xX /bin/bouncelt.sh
 chmod +xX /bin/bouncesc.sh
 chmod +xX /bin/nightlyactions.sh
-echo "1.00.22" >> /etc/tab_scripts/ver.txt
+chmod +xX /etc/tab_scripts/checkiscsi.sh
+echo "1.01.00" >> /etc/tab_scripts/ver.txt
 # create the nightly cron job to update files and the server
 echo "Adding CRONTAB job for ROOT to bounce LT nightly @ 8:00pm"
 sed '22,$ d' /etc/crontab > /tab_temp/crontab2
 mv /tab_temp/crontab2 /etc/crontab
 echo "30 20 * * * root /bin/nightlyactions.sh" >> /etc/crontab
+echo "10 * * * * root /etc/tab_scripts/checkisci.sh" >> /etc/crontab
 # get IP of server
 ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 echo "Disabling phased updates ..."
