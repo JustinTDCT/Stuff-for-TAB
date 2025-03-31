@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version 1.01.00
+# Version 1.01.01
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
 echo "=============================================================" >> /var/log/nightlyactions.log
@@ -18,7 +18,7 @@ rm /bin/bouncescreencon.sh 2> /dev/null
 rm /bin/nightlyactions.sh 2> /dev/null
 # make the tab folder
 mkdir /etc/tab_scripts
-echo "1.01.00" >> /etc/tab_scripts/ver.txt
+echo "1.01.01" >> /etc/tab_scripts/ver.txt
 mkdir /tab_temp
 chmod +777 /tab_temp
 # grab new files
@@ -48,7 +48,7 @@ cat /etc/crontab >> /var/log/nightlyactions.log
 sed '22,$ d' /etc/crontab > /tab_temp/crontab2
 mv /tab_temp/crontab2 /etc/crontab
 echo "30 20 * * * root /bin/nightlyactions.sh" >> /etc/crontab
-echo "10 * * * * root /etc/tab_scripts/checkisci.sh" >> /etc/crontab
+echo "10 * * * * root /etc/tab_scripts/etc/tab_scripts/checkiscsi.sh" >> /etc/crontab
 cat /etc/crontab >> /var/log/nightlyactions.log
 echo "Grab new files ..." >> /var/log/nightlyactions.log
 # kill LT
