@@ -25,3 +25,29 @@ https://stackoverflow.com/questions/2740906/how-to-access-command-line-arguments
     echo "Application Name: $APP_NAME"
     echo "Version: $VERSION"
     echo "Debug Mode: $DEBUG"
+
+
+
+   #!/bin/bash
+    
+    # Read config file
+    source config.conf
+    
+    # or
+    # . config.conf
+    
+    # Access and print variables
+    echo "VAR1: $VAR1"
+    echo "VAR2: $VAR2"
+    echo "VAR3: $VAR3"
+    
+    # Modify a variable
+    VAR1="new value"
+    echo "Modified VAR1: $VAR1"
+    
+    # Write back to the config file (optional)
+    {
+      echo "VAR1=\"$VAR1\""
+      echo "VAR2=\"$VAR2\""
+      echo "VAR3=\"$VAR3\""
+    } > config.conf
