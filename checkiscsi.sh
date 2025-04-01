@@ -9,7 +9,7 @@ if [ -d /mnt/veeamrepo/backups/ ]; then
   echo "iSCSI OK"
   if [ -f /etc/tab_scripts/iscsi.fail ]; then
     echo "Removing old fail file..."
-    echo "$(date)" >>/var/log/checkiscsi.log
+    echo "$(date)" >> /var/log/checkiscsi.log
     echo "- iSCSI reconnected" >> /var/log/checkiscsi.log
     rm -f /etc/tab_scripts/iscsi.fail
   fi
