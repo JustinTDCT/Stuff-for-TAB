@@ -50,4 +50,4 @@ https://stackoverflow.com/questions/2740906/how-to-access-command-line-arguments
       echo "VAR1=\"$VAR1\""
       echo "VAR2=\"$VAR2\""
       echo "VAR3=\"$VAR3\""
-    } > config.conf
+    } >> config.conf the >> is needed to change the one thing, > would make a new file with just the entries in question
