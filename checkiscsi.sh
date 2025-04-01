@@ -1,5 +1,5 @@
 #!/bin/bash  
-# version 1.03.0
+# version 1.03.3
 if [[ "$HOSTNAME" == *"veeam"* ]]; then
   echo "Veeam server moving ahead."
 else
