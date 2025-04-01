@@ -1,5 +1,5 @@
 #!/bin/bash
-# version 2.01.01
+# version 2.01.02
 
 # check the userID variable, if you are not 0 you are not SUDO
 echo "Checking to see if you are running under SUDO ..."
@@ -54,7 +54,7 @@ chmod +xX /bin/bouncelt.sh
 chmod +xX /bin/bouncesc.sh
 chmod +xX /bin/nightlyactions.sh
 chmod +xX /etc/tab_scripts/checkiscsi.sh
-echo "2.01.01" >> /etc/tab_scripts/ver.txt
+echo "2.01.02" >> /etc/tab_scripts/ver.txt
 # create the nightly cron job to update files and the server
 echo "Adding CRONTAB job for ROOT to bounce LT nightly @ 8:00pm"
 sed '22,$ d' /etc/crontab > /tab_temp/crontab2
